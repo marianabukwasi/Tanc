@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import { Bookmark, Star, Search, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
@@ -243,6 +244,7 @@ function SkeletonCard() {
 function OpportunityCard({ opp, matchInfo }: { opp: Opportunity; matchInfo: MatchInfo }) {
   const [saved, setSaved] = useState(false)
   const [hovered, setHovered] = useState(false)
+  const router = useRouter()
   const badge = TYPE_BADGE[opp.type] ?? { bg: '#f1f5f9', color: '#475569' }
   const days = opp.deadline_date ? daysUntil(opp.deadline_date) : null
 
@@ -250,6 +252,7 @@ function OpportunityCard({ opp, matchInfo }: { opp: Opportunity; matchInfo: Matc
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onClick={() => router.push(`/opportunity/${opp.id}`)}
       style={{
         backgroundColor: '#ffffff',
         border: `1px solid ${hovered ? '#d4a017' : '#e2e8f0'}`,
@@ -260,13 +263,14 @@ function OpportunityCard({ opp, matchInfo }: { opp: Opportunity; matchInfo: Matc
         gap: '10px',
         boxShadow: hovered ? '0 4px 20px rgba(0,0,0,0.08)' : 'none',
         transition: 'border-color 0.2s, box-shadow 0.2s',
+        cursor: 'pointer',
       }}
     >
       {/* Top row: match badge + save button */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <MatchBadge info={matchInfo} />
         <button
-          onClick={() => setSaved(!saved)}
+          onClick={(e) => { e.stopPropagation(); setSaved(!saved) }}
           aria-label="Save opportunity"
           style={{ background: 'none', border: 'none', cursor: 'pointer', color: saved ? '#d4a017' : '#cbd5e1', padding: '2px', display: 'flex', flexShrink: 0 }}
         >
@@ -293,8 +297,11 @@ function OpportunityCard({ opp, matchInfo }: { opp: Opportunity; matchInfo: Matc
         {opp.funding_type}
       </span>
 
-      <button style={{ marginTop: '4px', backgroundColor: '#d4a017', color: '#ffffff', border: 'none', borderRadius: '8px', padding: '10px 0', fontWeight: 600, fontSize: '14px', cursor: 'pointer', width: '100%', fontFamily: 'inherit' }}>
-        Apply Now
+      <button
+        onClick={(e) => { e.stopPropagation(); router.push(`/opportunity/${opp.id}`) }}
+        style={{ marginTop: '4px', backgroundColor: '#d4a017', color: '#ffffff', border: 'none', borderRadius: '8px', padding: '10px 0', fontWeight: 600, fontSize: '14px', cursor: 'pointer', width: '100%', fontFamily: 'inherit' }}
+      >
+        View Details
       </button>
     </div>
   )
