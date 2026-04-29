@@ -57,12 +57,12 @@ export default function Navbar() {
 
         {/* Right: Sign In + Get Started */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginLeft: 'auto' }}>
-          <a href="#" style={{ color: '#475569', textDecoration: 'none', fontSize: '14px', fontWeight: 500 }}
+          <a href="/signin" style={{ color: '#475569', textDecoration: 'none', fontSize: '14px', fontWeight: 500 }}
             className="hidden-mobile">
             Sign In
           </a>
           <a
-            href="#"
+            href="/signup"
             style={{
               backgroundColor: '#d4a017',
               color: '#ffffff',
