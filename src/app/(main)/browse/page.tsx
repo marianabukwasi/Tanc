@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { Bookmark, Star, Search, ChevronLeft, ChevronRight } from 'lucide-react'
+import type { User } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
+import { calculateMatch, type MatchProfile, type MatchInfo } from '@/lib/matching'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -20,6 +22,12 @@ interface Opportunity {
   education_level: string
   created_at: string
   views: number
+  // match fields (optional — may not exist in DB yet)
+  eligibility_countries?: string | string[] | null
+  field?: string | null
+  language_requirements?: string | string[] | null
+  min_age?: number | null
+  max_age?: number | null
 }
 
 interface Filters {
@@ -51,15 +59,15 @@ const FILTER_SECTIONS: { key: keyof Filters; label: string; options: string[] }[
 ]
 
 const TYPE_BADGE: Record<string, { bg: string; color: string }> = {
-  Scholarship:       { bg: '#eff6ff', color: '#1d4ed8' },
-  Fellowship:        { bg: '#f5f3ff', color: '#7c3aed' },
-  Internship:        { bg: '#f0fdf4', color: '#15803d' },
-  'Exchange Program':{ bg: '#fff7ed', color: '#c2410c' },
-  Conference:        { bg: '#fdf4ff', color: '#a21caf' },
-  Competition:       { bg: '#fff1f2', color: '#be123c' },
+  Scholarship:        { bg: '#eff6ff', color: '#1d4ed8' },
+  Fellowship:         { bg: '#f5f3ff', color: '#7c3aed' },
+  Internship:         { bg: '#f0fdf4', color: '#15803d' },
+  'Exchange Program': { bg: '#fff7ed', color: '#c2410c' },
+  Conference:         { bg: '#fdf4ff', color: '#a21caf' },
+  Competition:        { bg: '#fff1f2', color: '#be123c' },
 }
 
-const SORT_OPTIONS = ['Most Recent', 'Deadline Soon', 'Most Viewed', 'Fully Funded First']
+const SORT_OPTIONS = ['Most Recent', 'Deadline Soon', 'Most Viewed', 'Fully Funded First', 'Sort by Match']
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -95,8 +103,15 @@ function getPageNumbers(current: number, total: number): (number | '...')[] {
   return pages
 }
 
-function sortRows(rows: Opportunity[], sort: string): Opportunity[] {
+function sortRows(rows: Opportunity[], sort: string, profile?: MatchProfile | null): Opportunity[] {
   const copy = [...rows]
+  if (sort === 'Sort by Match' && profile) {
+    return copy.sort((a, b) => {
+      const aScore = calculateMatch(profile, a)?.score ?? -1
+      const bScore = calculateMatch(profile, b)?.score ?? -1
+      return bScore - aScore
+    })
+  }
   if (sort === 'Deadline Soon') {
     return copy.sort((a, b) => new Date(a.deadline_date).getTime() - new Date(b.deadline_date).getTime())
   }
@@ -104,14 +119,101 @@ function sortRows(rows: Opportunity[], sort: string): Opportunity[] {
     return copy.sort((a, b) => (b.views ?? 0) - (a.views ?? 0))
   }
   if (sort === 'Fully Funded First') {
-    return copy.sort((a, b) => {
-      const aFF = a.funding_type === 'Fully Funded' ? 0 : 1
-      const bFF = b.funding_type === 'Fully Funded' ? 0 : 1
-      return aFF - bFF
-    })
+    return copy.sort((a, b) => (a.funding_type === 'Fully Funded' ? 0 : 1) - (b.funding_type === 'Fully Funded' ? 0 : 1))
   }
-  // Most Recent (default)
   return copy.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+}
+
+function resolveMatchInfo(
+  authUser: User | null | undefined,
+  profile: MatchProfile | null,
+  opp: Opportunity
+): MatchInfo {
+  if (authUser === undefined) return { state: 'loading' }
+  if (!authUser) return { state: 'anonymous' }
+  if (!profile) return { state: 'incomplete' }
+  const result = calculateMatch(profile, opp)
+  if (!result) return { state: 'incomplete' }
+  return { state: 'score', value: result.score, isEstimate: result.isEstimate }
+}
+
+// ─── Match badge ──────────────────────────────────────────────────────────────
+
+function MatchBadge({ info }: { info: MatchInfo }) {
+  if (info.state === 'loading') {
+    return <div style={{ height: '38px' }} />
+  }
+
+  if (info.state === 'anonymous') {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+        <span style={{
+          display: 'inline-block',
+          backgroundColor: '#0a1628',
+          color: '#0a1628',
+          fontSize: '12px',
+          fontWeight: 700,
+          padding: '3px 10px',
+          borderRadius: '50px',
+          filter: 'blur(3px)',
+          userSelect: 'none',
+          letterSpacing: '0.5px',
+        }}>??%</span>
+        <span style={{ fontSize: '10px', color: '#94a3b8', lineHeight: 1.2, maxWidth: '72px' }}>
+          Sign up to see your match
+        </span>
+      </div>
+    )
+  }
+
+  if (info.state === 'incomplete') {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+        <span style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: '#fef9e7',
+          color: '#d4a017',
+          border: '1px solid #d4a017',
+          fontSize: '14px',
+          fontWeight: 700,
+          padding: '3px 10px',
+          borderRadius: '50px',
+          minWidth: '36px',
+        }}>?</span>
+        <span style={{ fontSize: '10px', color: '#94a3b8', lineHeight: 1.2, maxWidth: '72px' }}>
+          Complete profile
+        </span>
+      </div>
+    )
+  }
+
+  // state === 'score'
+  const { value, isEstimate } = info
+  const color  = value >= 70 ? '#15803d' : value >= 50 ? '#d4a017' : '#64748b'
+  const bg     = value >= 70 ? '#f0fdf4' : value >= 50 ? '#fef9e7' : '#f8fafc'
+  const border = value >= 70 ? '#86efac' : value >= 50 ? '#fcd34d' : '#e2e8f0'
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+      <span style={{
+        display: 'inline-block',
+        backgroundColor: bg,
+        color,
+        border: `1px solid ${border}`,
+        fontSize: '12px',
+        fontWeight: 700,
+        padding: '3px 10px',
+        borderRadius: '50px',
+      }}>
+        {value}%{isEstimate ? '~' : ''}
+      </span>
+      <span style={{ fontSize: '10px', color: '#94a3b8', lineHeight: 1.2 }}>
+        {isEstimate ? 'Est. match' : 'Match score'}
+      </span>
+    </div>
+  )
 }
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
@@ -119,19 +221,14 @@ function sortRows(rows: Opportunity[], sort: string): Opportunity[] {
 function SkeletonCard() {
   return (
     <>
-      <style>{`
-        @keyframes shimmer {
-          0%   { background-position: 200% 0 }
-          100% { background-position: -200% 0 }
-        }
-      `}</style>
+      <style>{`@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
       <div style={{ border: '1px solid #e2e8f0', borderRadius: '12px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {([40, 90, 70, 55, 40, 36] as const).map((w, i) => (
           <div key={i} style={{
             height: i === 5 ? '36px' : '13px',
             width: `${w}%`,
             borderRadius: '6px',
-            background: 'linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)',
+            background: 'linear-gradient(90deg,#f1f5f9 25%,#e2e8f0 50%,#f1f5f9 75%)',
             backgroundSize: '200% 100%',
             animation: 'shimmer 1.4s infinite',
           }} />
@@ -143,7 +240,7 @@ function SkeletonCard() {
 
 // ─── Card ─────────────────────────────────────────────────────────────────────
 
-function OpportunityCard({ opp }: { opp: Opportunity }) {
+function OpportunityCard({ opp, matchInfo }: { opp: Opportunity; matchInfo: MatchInfo }) {
   const [saved, setSaved] = useState(false)
   const [hovered, setHovered] = useState(false)
   const badge = TYPE_BADGE[opp.type] ?? { bg: '#f1f5f9', color: '#475569' }
@@ -161,26 +258,28 @@ function OpportunityCard({ opp }: { opp: Opportunity }) {
         display: 'flex',
         flexDirection: 'column',
         gap: '10px',
-        position: 'relative',
         boxShadow: hovered ? '0 4px 20px rgba(0,0,0,0.08)' : 'none',
         transition: 'border-color 0.2s, box-shadow 0.2s',
       }}
     >
-      <button
-        onClick={() => setSaved(!saved)}
-        aria-label="Save opportunity"
-        style={{ position: 'absolute', top: '14px', right: '14px', background: 'none', border: 'none', cursor: 'pointer', color: saved ? '#d4a017' : '#cbd5e1', padding: '2px', display: 'flex' }}
-      >
-        <Bookmark size={16} fill={saved ? '#d4a017' : 'none'} />
-      </button>
+      {/* Top row: match badge + save button */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <MatchBadge info={matchInfo} />
+        <button
+          onClick={() => setSaved(!saved)}
+          aria-label="Save opportunity"
+          style={{ background: 'none', border: 'none', cursor: 'pointer', color: saved ? '#d4a017' : '#cbd5e1', padding: '2px', display: 'flex', flexShrink: 0 }}
+        >
+          <Bookmark size={16} fill={saved ? '#d4a017' : 'none'} />
+        </button>
+      </div>
 
+      {/* Type badge */}
       <span style={{ display: 'inline-block', backgroundColor: badge.bg, color: badge.color, fontSize: '11px', fontWeight: 600, padding: '3px 10px', borderRadius: '50px', width: 'fit-content', textTransform: 'uppercase', letterSpacing: '0.4px' }}>
         {opp.type}
       </span>
 
-      <div style={{ fontWeight: 700, fontSize: '15px', color: '#0a1628', lineHeight: 1.3, paddingRight: '22px' }}>
-        {opp.title}
-      </div>
+      <div style={{ fontWeight: 700, fontSize: '15px', color: '#0a1628', lineHeight: 1.3 }}>{opp.title}</div>
       <div style={{ fontSize: '13px', color: '#475569' }}>{opp.organization}</div>
       <div style={{ fontSize: '13px', color: '#475569' }}>{opp.flag} {opp.country}</div>
 
@@ -194,7 +293,7 @@ function OpportunityCard({ opp }: { opp: Opportunity }) {
         {opp.funding_type}
       </span>
 
-      <button style={{ marginTop: '4px', backgroundColor: '#d4a017', color: '#ffffff', border: 'none', borderRadius: '8px', padding: '10px 0', fontWeight: 600, fontSize: '14px', cursor: 'pointer', width: '100%' }}>
+      <button style={{ marginTop: '4px', backgroundColor: '#d4a017', color: '#ffffff', border: 'none', borderRadius: '8px', padding: '10px 0', fontWeight: 600, fontSize: '14px', cursor: 'pointer', width: '100%', fontFamily: 'inherit' }}>
         Apply Now
       </button>
     </div>
@@ -204,10 +303,7 @@ function OpportunityCard({ opp }: { opp: Opportunity }) {
 // ─── Filter section ───────────────────────────────────────────────────────────
 
 function FilterSection({ label, options, value, onChange }: {
-  label: string
-  options: string[]
-  value: string
-  onChange: (v: string) => void
+  label: string; options: string[]; value: string; onChange: (v: string) => void
 }) {
   return (
     <div style={{ marginBottom: '24px' }}>
@@ -221,18 +317,7 @@ function FilterSection({ label, options, value, onChange }: {
             <label key={opt} style={{ display: 'flex', alignItems: 'center', gap: '9px', cursor: 'pointer', fontSize: '14px', color: checked ? '#0a1628' : '#475569', fontWeight: checked ? 500 : 400 }}>
               <span
                 onClick={() => onChange(opt)}
-                style={{
-                  width: '16px',
-                  height: '16px',
-                  borderRadius: '4px',
-                  border: `2px solid ${checked ? '#d4a017' : '#e2e8f0'}`,
-                  backgroundColor: checked ? '#d4a017' : '#ffffff',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                  transition: 'all 0.15s',
-                }}
+                style={{ width: '16px', height: '16px', borderRadius: '4px', border: `2px solid ${checked ? '#d4a017' : '#e2e8f0'}`, backgroundColor: checked ? '#d4a017' : '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'all 0.15s' }}
               >
                 {checked && (
                   <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
@@ -260,6 +345,27 @@ export default function BrowsePage() {
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS)
   const [page, setPage] = useState(1)
 
+  // Auth + profile state (undefined = still loading)
+  const [authUser, setAuthUser] = useState<User | null | undefined>(undefined)
+  const [userProfile, setUserProfile] = useState<MatchProfile | null>(null)
+
+  // Fetch auth user + profile once on mount
+  useEffect(() => {
+    async function fetchAuth() {
+      const { data } = await supabase.auth.getUser()
+      setAuthUser(data.user ?? null)
+      if (data.user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', data.user.id)
+          .single()
+        setUserProfile(profile as MatchProfile | null)
+      }
+    }
+    fetchAuth()
+  }, [])
+
   const setFilter = useCallback((key: keyof Filters, val: string) => {
     setFilters((prev) => ({ ...prev, [key]: val }))
     setPage(1)
@@ -271,25 +377,22 @@ export default function BrowsePage() {
     setPage(1)
   }, [])
 
-  // Fetch from Supabase whenever filters or search changes
+  // Fetch from Supabase on filter/search change
   useEffect(() => {
     const timer = setTimeout(async () => {
       setLoading(true)
       try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let query: any = supabase.from('opportunities').select('*').limit(10000)
-
         if (search.trim()) {
           query = query.or(`title.ilike.%${search.trim()}%,organization.ilike.%${search.trim()}%,country.ilike.%${search.trim()}%`)
         }
-        if (filters.type !== 'All')          query = query.eq('type', filters.type)
-        if (filters.funding !== 'All')       query = query.eq('funding_type', filters.funding)
-        if (filters.continent !== 'All')     query = query.eq('continent', filters.continent)
+        if (filters.type !== 'All')           query = query.eq('type', filters.type)
+        if (filters.funding !== 'All')        query = query.eq('funding_type', filters.funding)
+        if (filters.continent !== 'All')      query = query.eq('continent', filters.continent)
         if (filters.educationLevel !== 'All') query = query.eq('education_level', filters.educationLevel)
-
         const dr = getDeadlineRange(filters.deadline)
         if (dr) query = query.gte('deadline_date', dr.from).lte('deadline_date', dr.to)
-
         const { data, error } = await query
         if (error) throw error
         setAllRows((data ?? []) as Opportunity[])
@@ -299,15 +402,14 @@ export default function BrowsePage() {
         setLoading(false)
       }
     }, search ? 400 : 0)
-
     return () => clearTimeout(timer)
   }, [search, filters])
 
-  // Re-sort and paginate whenever allRows, sort, or page changes
+  // Sort + paginate when rows, sort, page, or profile changes
   useEffect(() => {
-    const sorted = sortRows(allRows, sort)
+    const sorted = sortRows(allRows, sort, userProfile)
     setResults(sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE))
-  }, [allRows, sort, page])
+  }, [allRows, sort, page, userProfile])
 
   // Reset to page 1 when sort changes
   useEffect(() => { setPage(1) }, [sort])
@@ -325,36 +427,18 @@ export default function BrowsePage() {
         <span style={{ color: '#0a1628', fontWeight: 500 }}>Browse</span>
       </div>
 
-      {/* Layout */}
       <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap' }}>
 
         {/* Sidebar */}
-        <aside style={{
-          width: '280px',
-          flexShrink: 0,
-          padding: '24px',
-          borderRight: '1px solid #e2e8f0',
-          minHeight: 'calc(100vh - 130px)',
-          boxSizing: 'border-box',
-        }}>
+        <aside style={{ width: '280px', flexShrink: 0, padding: '24px', borderRight: '1px solid #e2e8f0', minHeight: 'calc(100vh - 130px)', boxSizing: 'border-box' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
             <span style={{ fontWeight: 700, fontSize: '16px', color: '#0a1628' }}>Filter Results</span>
-            <button
-              onClick={clearAll}
-              style={{ background: 'none', border: 'none', color: '#d4a017', fontSize: '13px', fontWeight: 600, cursor: 'pointer', padding: 0 }}
-            >
+            <button onClick={clearAll} style={{ background: 'none', border: 'none', color: '#d4a017', fontSize: '13px', fontWeight: 600, cursor: 'pointer', padding: 0 }}>
               Clear All
             </button>
           </div>
-
           {FILTER_SECTIONS.map((s) => (
-            <FilterSection
-              key={s.key}
-              label={s.label}
-              options={s.options}
-              value={filters[s.key]}
-              onChange={(v) => setFilter(s.key, v)}
-            />
+            <FilterSection key={s.key} label={s.label} options={s.options} value={filters[s.key]} onChange={(v) => setFilter(s.key, v)} />
           ))}
         </aside>
 
@@ -370,33 +454,13 @@ export default function BrowsePage() {
                 value={search}
                 onChange={(e) => { setSearch(e.target.value); setPage(1) }}
                 placeholder="Search opportunities..."
-                style={{
-                  width: '100%',
-                  height: '48px',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '8px',
-                  padding: '0 16px 0 42px',
-                  fontSize: '14px',
-                  color: '#0a1628',
-                  outline: 'none',
-                  boxSizing: 'border-box',
-                }}
+                style={{ width: '100%', height: '48px', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0 16px 0 42px', fontSize: '14px', color: '#0a1628', outline: 'none', boxSizing: 'border-box' }}
               />
             </div>
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value)}
-              style={{
-                height: '48px',
-                border: '1px solid #e2e8f0',
-                borderRadius: '8px',
-                padding: '0 16px',
-                fontSize: '14px',
-                color: '#0a1628',
-                backgroundColor: '#ffffff',
-                cursor: 'pointer',
-                outline: 'none',
-              }}
+              style={{ height: '48px', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0 16px', fontSize: '14px', color: '#0a1628', backgroundColor: '#ffffff', cursor: 'pointer', outline: 'none' }}
             >
               {SORT_OPTIONS.map((s) => <option key={s}>{s}</option>)}
             </select>
@@ -404,7 +468,7 @@ export default function BrowsePage() {
 
           {/* Results count */}
           <div style={{ fontSize: '14px', color: '#475569', marginBottom: '20px' }}>
-            {loading ? 'Loading...' : `Showing ${total} opportunit${total === 1 ? 'y' : 'ies'}`}
+            {loading ? 'Loading…' : `Showing ${total} opportunit${total === 1 ? 'y' : 'ies'}`}
           </div>
 
           {/* Grid */}
@@ -421,7 +485,13 @@ export default function BrowsePage() {
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
-              {results.map((opp) => <OpportunityCard key={opp.id} opp={opp} />)}
+              {results.map((opp) => (
+                <OpportunityCard
+                  key={opp.id}
+                  opp={opp}
+                  matchInfo={resolveMatchInfo(authUser, userProfile, opp)}
+                />
+              ))}
             </div>
           )}
 
@@ -431,14 +501,7 @@ export default function BrowsePage() {
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: '4px',
-                  padding: '8px 14px', borderRadius: '8px',
-                  border: '1px solid #e2e8f0', backgroundColor: '#ffffff',
-                  color: page === 1 ? '#cbd5e1' : '#0a1628',
-                  cursor: page === 1 ? 'not-allowed' : 'pointer',
-                  fontSize: '14px', fontWeight: 500,
-                }}
+                style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '8px 14px', borderRadius: '8px', border: '1px solid #e2e8f0', backgroundColor: '#ffffff', color: page === 1 ? '#cbd5e1' : '#0a1628', cursor: page === 1 ? 'not-allowed' : 'pointer', fontSize: '14px', fontWeight: 500 }}
               >
                 <ChevronLeft size={15} /> Previous
               </button>
@@ -450,13 +513,7 @@ export default function BrowsePage() {
                   <button
                     key={p}
                     onClick={() => setPage(p as number)}
-                    style={{
-                      width: '36px', height: '36px', borderRadius: '8px',
-                      border: `1px solid ${page === p ? '#d4a017' : '#e2e8f0'}`,
-                      backgroundColor: page === p ? '#d4a017' : '#ffffff',
-                      color: page === p ? '#ffffff' : '#0a1628',
-                      cursor: 'pointer', fontSize: '14px', fontWeight: 500,
-                    }}
+                    style={{ width: '36px', height: '36px', borderRadius: '8px', border: `1px solid ${page === p ? '#d4a017' : '#e2e8f0'}`, backgroundColor: page === p ? '#d4a017' : '#ffffff', color: page === p ? '#ffffff' : '#0a1628', cursor: 'pointer', fontSize: '14px', fontWeight: 500 }}
                   >
                     {p}
                   </button>
@@ -466,14 +523,7 @@ export default function BrowsePage() {
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: '4px',
-                  padding: '8px 14px', borderRadius: '8px',
-                  border: '1px solid #e2e8f0', backgroundColor: '#ffffff',
-                  color: page === totalPages ? '#cbd5e1' : '#0a1628',
-                  cursor: page === totalPages ? 'not-allowed' : 'pointer',
-                  fontSize: '14px', fontWeight: 500,
-                }}
+                style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '8px 14px', borderRadius: '8px', border: '1px solid #e2e8f0', backgroundColor: '#ffffff', color: page === totalPages ? '#cbd5e1' : '#0a1628', cursor: page === totalPages ? 'not-allowed' : 'pointer', fontSize: '14px', fontWeight: 500 }}
               >
                 Next <ChevronRight size={15} />
               </button>
