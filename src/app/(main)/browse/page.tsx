@@ -6,6 +6,7 @@ import { Bookmark, Star, Search, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 import { calculateMatch, type MatchProfile, type MatchInfo } from '@/lib/matching'
+import AdBanner from '@/components/AdBanner'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -451,6 +452,9 @@ export default function BrowsePage() {
           {FILTER_SECTIONS.map((s) => (
             <FilterSection key={s.key} label={s.label} options={s.options} value={filters[s.key]} onChange={(v) => setFilter(s.key, v)} />
           ))}
+          <div style={{ marginTop: '8px' }}>
+            <AdBanner slot="browse-sidebar" size="rectangle" />
+          </div>
         </aside>
 
         {/* Main */}
@@ -475,6 +479,11 @@ export default function BrowsePage() {
             >
               {SORT_OPTIONS.map((s) => <option key={s}>{s}</option>)}
             </select>
+          </div>
+
+          {/* Ad banner */}
+          <div style={{ marginBottom: '20px' }}>
+            <AdBanner slot="browse-top" size="banner" />
           </div>
 
           {/* Results count */}

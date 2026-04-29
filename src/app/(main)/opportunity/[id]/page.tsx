@@ -7,6 +7,7 @@ import { Bookmark, Share2, ExternalLink, ChevronRight, Check, X, BookOpen, FileT
 import type { User } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 import { calculateMatch, type MatchProfile, type MatchInfo } from '@/lib/matching'
+import AdBanner from '@/components/AdBanner'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -659,6 +660,11 @@ export default function OpportunityDetailPage() {
               <Link href="/profile/setup" style={{ display: 'inline-block', padding: '8px 16px', backgroundColor: '#0a1628', color: '#ffffff', borderRadius: '8px', fontSize: '12px', fontWeight: 600, textDecoration: 'none' }}>Complete profile</Link>
             </div>
           )}
+
+          {/* Ad */}
+          <div style={{ marginTop: '20px' }}>
+            <AdBanner slot="opportunity-sidebar" size="rectangle" />
+          </div>
         </div>
       </div>
     </div>
