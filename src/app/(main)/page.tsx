@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Bookmark, Search } from 'lucide-react'
+import { Bookmark, Search, Bell } from 'lucide-react'
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
@@ -192,6 +192,91 @@ function OpportunityCard({ opp }: { opp: Opportunity }) {
 
 // ─── Page ────────────────────────────────────────────────────────────────────
 
+function AlertBar() {
+  const [email, setEmail] = useState('')
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+
+  async function subscribe(e: React.FormEvent) {
+    e.preventDefault()
+    if (!email.trim()) return
+    setStatus('loading')
+    try {
+      const res = await fetch('/api/alerts/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim() }),
+      })
+      setStatus(res.ok ? 'success' : 'error')
+    } catch {
+      setStatus('error')
+    }
+  }
+
+  return (
+    <section style={{
+      backgroundColor: '#0a1628',
+      padding: '20px 24px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '16px',
+      flexWrap: 'wrap',
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#ffffff' }}>
+        <Bell size={16} color="#d4a017" />
+        <span style={{ fontSize: '14px', fontWeight: 600 }}>Never miss an opportunity.</span>
+        <span style={{ fontSize: '14px', color: '#94a3b8' }}>Get weekly alerts.</span>
+      </div>
+
+      {status === 'success' ? (
+        <span style={{ fontSize: '14px', color: '#4ade80', fontWeight: 600 }}>✓ You're subscribed!</span>
+      ) : (
+        <form onSubmit={subscribe} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your email"
+            style={{
+              height: '38px',
+              border: '1px solid #2d3f5a',
+              borderRadius: '8px',
+              padding: '0 14px',
+              fontSize: '14px',
+              color: '#ffffff',
+              backgroundColor: '#162033',
+              outline: 'none',
+              width: '220px',
+            }}
+          />
+          <button
+            type="submit"
+            disabled={status === 'loading'}
+            style={{
+              height: '38px',
+              padding: '0 20px',
+              backgroundColor: status === 'loading' ? '#b8891a' : '#d4a017',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: 700,
+              cursor: status === 'loading' ? 'not-allowed' : 'pointer',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {status === 'loading' ? 'Subscribing…' : 'Subscribe'}
+          </button>
+          {status === 'error' && (
+            <span style={{ fontSize: '13px', color: '#f87171', alignSelf: 'center' }}>Something went wrong. Try again.</span>
+          )}
+        </form>
+      )}
+    </section>
+  )
+}
+
 export default function Home() {
   const [searchFocused, setSearchFocused] = useState(false)
   const [hoveredTag, setHoveredTag] = useState<string | null>(null)
@@ -330,6 +415,9 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {/* ── EMAIL ALERT BAR ──────────────────────────────────────────────── */}
+      <AlertBar />
 
       {/* ── STATS BAR ────────────────────────────────────────────────────── */}
       <Reveal>

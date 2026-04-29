@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Bookmark, FileText, Star } from 'lucide-react'
+import { Bookmark, FileText, Star, Bell } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import type { User } from '@supabase/supabase-js'
 
@@ -38,7 +38,13 @@ interface Application {
   applied_at: string
 }
 
-type Tab = 'saved' | 'applications'
+type Tab = 'saved' | 'applications' | 'notifications'
+
+interface AlertPrefs {
+  weekly_digest: boolean
+  deadline_reminders: boolean
+  new_in_field: boolean
+}
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
@@ -50,6 +56,14 @@ export default function ProfilePage() {
   const [applications, setApplications] = useState<Application[]>([])
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState<Tab>('saved')
+  const [alertPrefs, setAlertPrefs] = useState<AlertPrefs>({
+    weekly_digest: true,
+    deadline_reminders: true,
+    new_in_field: true,
+  })
+  const [alertEmail, setAlertEmail] = useState('')
+  const [prefsSaving, setPrefsSaving] = useState(false)
+  const [prefsSaved, setPrefsSaved] = useState(false)
 
   useEffect(() => {
     supabase.auth.getUser().then(async ({ data }) => {
@@ -79,9 +93,35 @@ export default function ProfilePage() {
         .order('applied_at', { ascending: false })
       setApplications((appData ?? []) as Application[])
 
+      // Load alert preferences
+      if (data.user.email) {
+        setAlertEmail(data.user.email)
+        const { data: subData } = await supabase
+          .from('email_subscribers')
+          .select('preferences')
+          .eq('email', data.user.email)
+          .maybeSingle()
+        if (subData?.preferences) {
+          setAlertPrefs(subData.preferences as AlertPrefs)
+        }
+      }
+
       setLoading(false)
     })
   }, [router])
+
+  async function savePreferences() {
+    if (!user?.email) return
+    setPrefsSaving(true)
+    await fetch('/api/alerts/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: user.email, userId: user.id, preferences: alertPrefs }),
+    })
+    setPrefsSaving(false)
+    setPrefsSaved(true)
+    setTimeout(() => setPrefsSaved(false), 2500)
+  }
 
   if (loading) {
     return (
@@ -177,7 +217,7 @@ export default function ProfilePage() {
 
         {/* ── Tabs ──────────────────────────────────────────────────────── */}
         <div style={{ display: 'flex', borderBottom: '1px solid #e2e8f0', marginBottom: '28px' }}>
-          {([['saved', 'Saved Opportunities', Bookmark], ['applications', 'Applications', FileText]] as const).map(([key, label, Icon]) => (
+          {([['saved', 'Saved Opportunities', Bookmark], ['applications', 'Applications', FileText], ['notifications', 'Notifications', Bell]] as const).map(([key, label, Icon]) => (
             <button
               key={key}
               onClick={() => setTab(key)}
@@ -271,6 +311,87 @@ export default function ProfilePage() {
               ))}
             </div>
           )
+        )}
+
+        {/* ── Notifications ─────────────────────────────────────────────── */}
+        {tab === 'notifications' && (
+          <div style={{ maxWidth: '520px' }}>
+            <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#0a1628', marginBottom: '6px' }}>Email Notifications</h2>
+            <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '28px' }}>
+              Alerts go to <strong>{alertEmail || user?.email}</strong>
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+              {([
+                { key: 'weekly_digest',       label: 'Weekly digest',              desc: 'A curated list of opportunities matching your profile, every Monday.' },
+                { key: 'deadline_reminders',  label: 'Deadline reminders',         desc: 'Get notified 7 days before saved opportunities close.' },
+                { key: 'new_in_field',        label: 'New opportunities in my field', desc: 'Instant alerts when new opportunities matching your field are added.' },
+              ] as { key: keyof AlertPrefs; label: string; desc: string }[]).map(({ key, label, desc }, i, arr) => (
+                <div
+                  key={key}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '18px 0',
+                    borderBottom: i < arr.length - 1 ? '1px solid #f1f5f9' : 'none',
+                    gap: '16px',
+                  }}
+                >
+                  <div>
+                    <div style={{ fontSize: '15px', fontWeight: 600, color: '#0a1628', marginBottom: '3px' }}>{label}</div>
+                    <div style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.5 }}>{desc}</div>
+                  </div>
+                  <button
+                    onClick={() => setAlertPrefs((p) => ({ ...p, [key]: !p[key] }))}
+                    aria-label={`Toggle ${label}`}
+                    style={{
+                      width: '44px',
+                      height: '24px',
+                      borderRadius: '12px',
+                      border: 'none',
+                      cursor: 'pointer',
+                      backgroundColor: alertPrefs[key] ? '#d4a017' : '#e2e8f0',
+                      position: 'relative',
+                      flexShrink: 0,
+                      transition: 'background-color 0.2s',
+                    }}
+                  >
+                    <span style={{
+                      position: 'absolute',
+                      top: '3px',
+                      left: alertPrefs[key] ? '23px' : '3px',
+                      width: '18px',
+                      height: '18px',
+                      borderRadius: '50%',
+                      backgroundColor: '#ffffff',
+                      transition: 'left 0.2s',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.15)',
+                    }} />
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <button
+              onClick={savePreferences}
+              disabled={prefsSaving}
+              style={{
+                marginTop: '28px',
+                padding: '11px 28px',
+                backgroundColor: prefsSaved ? '#15803d' : prefsSaving ? '#b8891a' : '#d4a017',
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: '8px',
+                fontSize: '14px',
+                fontWeight: 700,
+                cursor: prefsSaving ? 'not-allowed' : 'pointer',
+                transition: 'background-color 0.2s',
+              }}
+            >
+              {prefsSaved ? '✓ Saved' : prefsSaving ? 'Saving…' : 'Save preferences'}
+            </button>
+          </div>
         )}
 
       </div>
