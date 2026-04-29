@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect, useCallback, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Bookmark, Star, Search, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
@@ -349,12 +349,26 @@ function FilterSection({ label, options, value, onChange }: {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function BrowsePage() {
+  return (
+    <Suspense fallback={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', color: '#94a3b8' }}>Loading…</div>}>
+      <BrowsePageContent />
+    </Suspense>
+  )
+}
+
+function BrowsePageContent() {
+  const searchParams = useSearchParams()
   const [allRows, setAllRows] = useState<Opportunity[]>([])
   const [results, setResults] = useState<Opportunity[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState('Most Recent')
-  const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS)
+  const [filters, setFilters] = useState<Filters>(() => {
+    const typeParam = searchParams.get('type')
+    return typeParam
+      ? { ...DEFAULT_FILTERS, type: typeParam }
+      : DEFAULT_FILTERS
+  })
   const [page, setPage] = useState(1)
 
   // Auth + profile state (undefined = still loading)

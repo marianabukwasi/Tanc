@@ -3,7 +3,14 @@
 import { useState } from 'react'
 import { Star, Menu, X } from 'lucide-react'
 
-const navLinks = ['Browse', 'Scholarships', 'Fellowships', 'Internships', 'Conferences', 'Events']
+const navLinks: { label: string; href: string }[] = [
+  { label: 'Browse',          href: '/browse' },
+  { label: 'Scholarships',    href: '/browse?type=Scholarship' },
+  { label: 'Fellowships',     href: '/browse?type=Fellowship' },
+  { label: 'Internships',     href: '/browse?type=Internship' },
+  { label: 'Conferences',     href: '/browse?type=Conference' },
+  { label: 'Events',          href: '/browse?type=Events' },
+]
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -41,8 +48,8 @@ export default function Navbar() {
         }} className="hidden-mobile">
           {navLinks.map((link) => (
             <a
-              key={link}
-              href="#"
+              key={link.label}
+              href={link.href}
               style={{
                 color: '#475569',
                 textDecoration: 'none',
@@ -50,7 +57,7 @@ export default function Navbar() {
                 fontWeight: 500,
               }}
             >
-              {link}
+              {link.label}
             </a>
           ))}
         </div>
@@ -105,20 +112,27 @@ export default function Navbar() {
         }}>
           {navLinks.map((link) => (
             <a
-              key={link}
-              href="#"
+              key={link.label}
+              href={link.href}
               style={{ color: '#0a1628', textDecoration: 'none', fontSize: '15px', fontWeight: 500 }}
               onClick={() => setMobileOpen(false)}
             >
-              {link}
+              {link.label}
             </a>
           ))}
           <a
-            href="#"
+            href="/signin"
             style={{ color: '#475569', textDecoration: 'none', fontSize: '15px', fontWeight: 500 }}
             onClick={() => setMobileOpen(false)}
           >
             Sign In
+          </a>
+          <a
+            href="/signup"
+            style={{ color: '#ffffff', backgroundColor: '#d4a017', textDecoration: 'none', fontSize: '15px', fontWeight: 600, padding: '10px 20px', borderRadius: '8px', textAlign: 'center' }}
+            onClick={() => setMobileOpen(false)}
+          >
+            Get Started Free
           </a>
         </div>
       )}
