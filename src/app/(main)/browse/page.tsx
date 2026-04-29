@@ -16,14 +16,12 @@ interface Opportunity {
   country: string
   continent: string
   flag: string
-  deadline: string
-  deadline_date: string
+  deadline_date: string | null
   funding_type: string
   type: string
   education_level: string
   created_at: string
   views: number
-  // match fields (optional — may not exist in DB yet)
   eligibility_countries?: string | string[] | null
   field?: string | null
   language_requirements?: string | string[] | null
@@ -72,8 +70,14 @@ const SORT_OPTIONS = ['Most Recent', 'Deadline Soon', 'Most Viewed', 'Fully Fund
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function daysUntil(dateStr: string) {
+function daysUntil(dateStr: string | null) {
+  if (!dateStr) return null
   return Math.ceil((new Date(dateStr).getTime() - Date.now()) / 86400000)
+}
+
+function formatDeadline(dateStr: string | null): string {
+  if (!dateStr) return 'Rolling / Open'
+  return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
 function getDeadlineRange(filter: string): { from: string; to: string } | null {
@@ -114,7 +118,7 @@ function sortRows(rows: Opportunity[], sort: string, profile?: MatchProfile | nu
     })
   }
   if (sort === 'Deadline Soon') {
-    return copy.sort((a, b) => new Date(a.deadline_date).getTime() - new Date(b.deadline_date).getTime())
+    return copy.sort((a, b) => new Date(a.deadline_date ?? '9999').getTime() - new Date(b.deadline_date ?? '9999').getTime())
   }
   if (sort === 'Most Viewed') {
     return copy.sort((a, b) => (b.views ?? 0) - (a.views ?? 0))
@@ -246,7 +250,7 @@ function OpportunityCard({ opp, matchInfo }: { opp: Opportunity; matchInfo: Matc
   const [hovered, setHovered] = useState(false)
   const router = useRouter()
   const badge = TYPE_BADGE[opp.type] ?? { bg: '#f1f5f9', color: '#475569' }
-  const days = opp.deadline_date ? daysUntil(opp.deadline_date) : null
+  const days = daysUntil(opp.deadline_date)
 
   return (
     <div
@@ -289,7 +293,7 @@ function OpportunityCard({ opp, matchInfo }: { opp: Opportunity; matchInfo: Matc
 
       {days !== null && (
         <div style={{ fontSize: '13px', color: days <= 30 ? '#dc2626' : '#475569', fontWeight: days <= 30 ? 600 : 400 }}>
-          Deadline: {opp.deadline}{days <= 30 ? ` · ${days}d left` : ''}
+          Deadline: {formatDeadline(opp.deadline_date)}{days !== null && days <= 30 ? ` · ${days}d left` : ''}
         </div>
       )}
 

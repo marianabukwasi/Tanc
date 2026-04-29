@@ -17,8 +17,7 @@ interface Opportunity {
   country: string
   continent: string
   flag: string
-  deadline: string
-  deadline_date: string
+  deadline_date: string | null
   funding_type: string
   type: string
   education_level: string
@@ -55,9 +54,14 @@ const TABS = ['Overview', 'Eligibility', 'How to Apply', 'Similar']
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function daysUntil(dateStr: string) {
+function daysUntil(dateStr: string | null | undefined) {
   if (!dateStr) return null
   return Math.ceil((new Date(dateStr).getTime() - Date.now()) / 86400000)
+}
+
+function formatDeadline(dateStr: string | null | undefined): string {
+  if (!dateStr) return 'Rolling / Open'
+  return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
 function deadlineColor(days: number | null) {
@@ -412,12 +416,16 @@ export default function OpportunityDetailPage() {
               <Globe size={14} />
               {opportunity.flag} {opportunity.country}
             </span>
-            {days !== null && (
-              <span style={{ display: 'flex', alignItems: 'center', gap: '5px', color: deadlineColor(days), fontWeight: 600 }}>
-                <Clock size={14} />
-                {days < 0 ? 'Deadline passed' : days === 0 ? 'Deadline today!' : `${days} days left`}
-              </span>
-            )}
+            <span style={{ display: 'flex', alignItems: 'center', gap: '5px', color: deadlineColor(days), fontWeight: 600 }}>
+              <Clock size={14} />
+              {days === null
+                ? 'Rolling / Open'
+                : days < 0
+                  ? 'Deadline passed'
+                  : days === 0
+                    ? `${formatDeadline(opportunity.deadline_date)} · Deadline today!`
+                    : `${formatDeadline(opportunity.deadline_date)} · ${days} days left`}
+            </span>
           </div>
 
           {/* Tabs */}
@@ -579,7 +587,7 @@ export default function OpportunityDetailPage() {
               { icon: <Award size={14} />, label: 'Funding', value: opportunity.funding_type },
               { icon: <BookOpen size={14} />, label: 'Education', value: opportunity.education_level || 'Any' },
               { icon: <Globe size={14} />, label: 'Location', value: `${opportunity.flag} ${opportunity.country}` },
-              { icon: <Clock size={14} />, label: 'Deadline', value: opportunity.deadline || '—' },
+              { icon: <Clock size={14} />, label: 'Deadline', value: formatDeadline(opportunity.deadline_date) },
               { icon: <Users size={14} />, label: 'Type', value: opportunity.type },
             ].map(({ icon, label, value }) => (
               <div key={label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '8px 0', borderBottom: '1px solid #f1f5f9', gap: '8px' }}>
