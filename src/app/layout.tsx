@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import ChatAssistant from '@/components/ChatAssistant'
 
 export const metadata: Metadata = {
   title: 'TANC — Every Opportunity. One Place.',
@@ -10,7 +11,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        <ChatAssistant />
+      </body>
     </html>
   )
 }
