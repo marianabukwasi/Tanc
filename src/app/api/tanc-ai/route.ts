@@ -13,15 +13,16 @@ Always be encouraging and specific. Never be vague. Speak like a knowledgeable f
 User profile if available: [userProfile]`
 
 export async function POST(request: Request) {
-  const { messages, userProfile } = await request.json() as {
+  const { messages, userProfile, opportunityContext } = await request.json() as {
     messages: { role: 'user' | 'assistant'; content: string }[]
     userProfile?: Record<string, unknown> | null
+    opportunityContext?: string | null
   }
 
   const systemPrompt = BASE_SYSTEM_PROMPT.replace(
     '[userProfile]',
     userProfile ? JSON.stringify(userProfile, null, 2) : 'Not provided'
-  )
+  ) + (opportunityContext ? `\n\nApplication context: ${opportunityContext}` : '')
 
   const encoder = new TextEncoder()
 

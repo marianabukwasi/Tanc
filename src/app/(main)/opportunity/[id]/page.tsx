@@ -617,6 +617,19 @@ export default function OpportunityDetailPage() {
             </button>
           )}
 
+          {/* Guide Me */}
+          <Link
+            href={`/apply/${opportunity.id}`}
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+              width: '100%', padding: '11px', backgroundColor: '#0a1628', color: '#ffffff',
+              borderRadius: '10px', fontSize: '14px', fontWeight: 600, textDecoration: 'none',
+              marginBottom: '10px', boxSizing: 'border-box',
+            }}
+          >
+            Guide Me Through This Application
+          </Link>
+
           {/* Save + Share */}
           <div style={{ display: 'flex', gap: '10px' }}>
             <button
