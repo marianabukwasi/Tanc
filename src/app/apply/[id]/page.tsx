@@ -115,7 +115,7 @@ export default function ApplyPage() {
     if (!authUser || !id) return
     supabase
       .from('applications')
-      .select('current_step, documents_checked, personal_statement, references')
+      .select('current_step, documents_checked, personal_statement, refs')
       .eq('user_id', authUser.id)
       .eq('opportunity_id', id)
       .maybeSingle()
@@ -126,13 +126,13 @@ export default function ApplyPage() {
           current_step: number | null
           documents_checked: string[] | null
           personal_statement: string | null
-          references: Reference[] | null
+          refs: Reference[] | null
         }
         setAppState({
           currentStep: row.current_step ?? 1,
           documentsChecked: row.documents_checked ?? [],
           personalStatement: row.personal_statement ?? '',
-          refs: row.references ?? [{ name: '', email: '' }, { name: '', email: '' }],
+          refs: row.refs ?? [{ name: '', email: '' }, { name: '', email: '' }],
         })
       })
   }, [authUser, id])
@@ -162,7 +162,7 @@ export default function ApplyPage() {
           current_step: state.currentStep,
           documents_checked: state.documentsChecked,
           personal_statement: state.personalStatement,
-          references: state.refs,
+          refs: state.refs,
           updated_at: new Date().toISOString(),
         },
         { onConflict: 'user_id,opportunity_id' }
