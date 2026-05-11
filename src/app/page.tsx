@@ -365,10 +365,10 @@ export default function HomePage() {
   const [homeStories, setHomeStories] = useState<HomeStory[]>([])
   const [loaded, setLoaded] = useState(false)
 
-  // Redirect logged-in users
+  // Redirect logged-in users to the feed
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) router.replace('/dashboard')
+      if (data.session) router.replace('/opportunities')
     })
   }, [router])
 

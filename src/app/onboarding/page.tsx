@@ -116,7 +116,7 @@ export default function OnboardingPage() {
       setSubmitting(false)
       return
     }
-    router.push('/dashboard')
+    router.push('/opportunities')
   }
 
   const canNext1 = country.length > 0
