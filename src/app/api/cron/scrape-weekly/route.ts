@@ -17,6 +17,8 @@ const SCRAPERS = [
   { name: 'afterschoolafrica', file: 'scraper-afterschoolafrica.js' },
   { name: 'volunteerworld',    file: 'scraper-volunteerworld.js'    },
   { name: 'unvolunteers',      file: 'scraper-unvolunteers.js'      },
+  { name: 'residencies',       file: 'scraper-residencies.js'       },
+  { name: 'conferences',       file: 'scraper-conferences.js'       },
 ]
 
 export async function GET(request: Request) {
