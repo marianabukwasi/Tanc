@@ -36,6 +36,13 @@ function inferType(url, categoryText) {
   return 'Other'
 }
 
+// ── Expiry guard ─────────────────────────────────────────────────────────────
+
+function isExpired(deadline) {
+  if (!deadline) return false
+  return new Date(deadline) < new Date(new Date().toISOString().split('T')[0])
+}
+
 // ── Date parsing ────────────────────────────────────────────────────────────
 
 const DATE_PATTERNS = [
@@ -185,6 +192,8 @@ async function scrapeAll() {
         try {
           const post = await scrapePost(postUrl)
           if (!post || !post.title) continue
+
+          if (isExpired(post.deadline)) { console.log('  Skip (expired):', post.title); continue }
 
           const record = {
             title:                post.title,

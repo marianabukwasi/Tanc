@@ -15,6 +15,13 @@ const CATEGORIES = [
   { url: 'https://opportunitydesk.org/category/grants/',       type: 'Grant'       },
 ]
 
+// ── Expiry guard ─────────────────────────────────────────────────────────────
+
+function isExpired(deadline) {
+  if (!deadline) return false
+  return new Date(deadline) < new Date(new Date().toISOString().split('T')[0])
+}
+
 // ── Date parsing ────────────────────────────────────────────────────────────
 
 const DATE_PATTERNS = [
@@ -165,6 +172,8 @@ async function scrapeCategory(baseUrl, type) {
         try {
           const post = await scrapePost(postUrl, type)
           if (!post || !post.title) continue
+
+          if (isExpired(post.deadline)) { console.log('  Skip (expired):', post.title); continue }
 
           const record = {
             title:                post.title,

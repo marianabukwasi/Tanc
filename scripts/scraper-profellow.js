@@ -11,6 +11,13 @@ const BASE_URL = 'https://www.profellow.com/fellowships/'
 const OPPORTUNITY_TYPE = 'Fellowship'
 const HEADERS = { 'User-Agent': 'Mozilla/5.0 (compatible; TANC-Bot/1.0)' }
 
+// ── Expiry guard ─────────────────────────────────────────────────────────────
+
+function isExpired(deadline) {
+  if (!deadline) return false
+  return new Date(deadline) < new Date(new Date().toISOString().split('T')[0])
+}
+
 // ── Date parsing ────────────────────────────────────────────────────────────
 
 const DATE_PATTERNS = [
@@ -135,6 +142,8 @@ async function scrapeAll() {
         try {
           const f = await scrapeFellowshipPage(fellowUrl)
           if (!f || !f.title) continue
+
+          if (isExpired(f.deadline)) { console.log('  Skip (expired):', f.title); continue }
 
           const record = {
             title:                f.title,
