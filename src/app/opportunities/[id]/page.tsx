@@ -20,12 +20,24 @@ async function fetchBasic(id: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
   const opp = await fetchBasic(id)
-  if (!opp) return { title: 'Opportunity — TANC' }
+  if (!opp) return { title: 'Opportunity Not Found' }
+  const title = `${opp.title} — ${opp.organization_name ?? 'TANC'}`
+  const description = opp.description
+    ? opp.description.substring(0, 155)
+    : `${opp.title} by ${opp.organization_name ?? ''} in ${opp.country ?? ''}. Discover and apply on TANC.`
   return {
-    title: `${opp.title} — TANC`,
-    description: opp.description
-      ? opp.description.slice(0, 160)
-      : `${opp.title} by ${opp.organization_name ?? ''} in ${opp.country ?? ''}. Discover and apply on TANC.`,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+    },
   }
 }
 

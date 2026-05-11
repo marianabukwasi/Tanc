@@ -31,6 +31,7 @@ export default async function UsersPage() {
     .from('profiles')
     .select('id, first_name, last_name, nationalities, education_level, field_of_study, profile_complete_pct, role, created_at')
     .order('created_at', { ascending: false })
+    .limit(500)
 
   const rows = (profiles ?? []) as Profile[]
 

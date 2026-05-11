@@ -5,9 +5,28 @@ import ChatAssistant from '@/components/ChatAssistant'
 import NavBar from '@/components/Navbar'
 
 export const metadata: Metadata = {
-  title: 'TANC — Every Opportunity. One Place.',
+  title: {
+    default: 'TANC — Global Opportunity Platform',
+    template: '%s | TANC',
+  },
   description:
-    'Find scholarships, fellowships, internships, exchange programs and conferences. All in one place.',
+    'Discover scholarships, fellowships, retreats, conferences, sports events and more — matched to your profile. Free forever.',
+  openGraph: {
+    title: 'TANC — Global Opportunity Platform',
+    description:
+      'Discover scholarships, fellowships, retreats, conferences, sports events and more — matched to your profile. Free forever.',
+    url: 'https://tancglobal.com',
+    siteName: 'TANC',
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'TANC — Global Opportunity Platform',
+    description:
+      'Discover scholarships, fellowships, retreats, conferences, sports events and more — matched to your profile. Free forever.',
+  },
+  metadataBase: new URL('https://tancglobal.com'),
 }
 
 export const viewport: Viewport = {
@@ -21,6 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
+        <link rel="manifest" href="/manifest.json" />
         {ADSENSE_CLIENT && (
           <Script
             async

@@ -43,6 +43,7 @@ export default function QueuePage() {
       .eq('is_published', false)
       .eq('is_archived', false)
       .order('created_at', { ascending: true })
+      .limit(200)
     setPending((data ?? []) as PendingOpp[])
   }, [])
 
@@ -52,6 +53,7 @@ export default function QueuePage() {
       .select('id, opportunity_id, reason, details, status, created_at, opportunity:opportunities(id, title)')
       .eq('status', 'pending')
       .order('created_at', { ascending: true })
+      .limit(200)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setReports((data ?? []).map((r: any) => ({
       ...r,

@@ -47,6 +47,7 @@ export default function ManagePage() {
       .from('opportunities')
       .select('id, title, organization_name, opportunity_type, country, application_deadline, is_published, is_featured, is_archived, views, saves')
       .order('created_at', { ascending: false })
+      .limit(500)
     setOpps((data ?? []) as Opp[])
     setLoading(false)
   }, [])

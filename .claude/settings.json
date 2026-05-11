@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\lux\\\\Desktop\\\\Tanc\\\\src\\\\app\\\\admin\" -Force)",
+      "Bash(node -e ' *)",
+      "Bash(node -e \"const s = require\\('sharp'\\); console.log\\(s.versions\\);\")"
+    ]
+  }
+}

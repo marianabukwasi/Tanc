@@ -45,7 +45,8 @@ export default async function AnalyticsPage() {
     supabase
       .from('opportunities')
       .select('opportunity_type')
-      .eq('is_archived', false),
+      .eq('is_archived', false)
+      .limit(5000),
     supabase
       .from('opportunities')
       .select('title, saves')
@@ -57,10 +58,12 @@ export default async function AnalyticsPage() {
       .from('profiles')
       .select('created_at')
       .gte('created_at', sixMonthsAgo.toISOString())
-      .order('created_at', { ascending: true }),
+      .order('created_at', { ascending: true })
+      .limit(5000),
     supabase
       .from('profiles')
-      .select('nationalities'),
+      .select('nationalities')
+      .limit(5000),
   ])
 
   // Opps by type
