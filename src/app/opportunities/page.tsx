@@ -598,12 +598,14 @@ function MatchBadge({ authUser, profile, opp }: {
 
 // ─── Opportunity card ─────────────────────────────────────────────────────────
 
-function OppCard({ opp, authUser, profile, saved, onSave }: {
+function OppCard({ opp, authUser, profile, saved, onSave, isCompared, onToggleCompare }: {
   opp: Opp
   authUser: User | null | undefined
   profile: EngineProfile | null
   saved: boolean
   onSave: (id: string) => void
+  isCompared?: boolean
+  onToggleCompare?: (id: string) => void
 }) {
   const [hovered, setHovered] = useState(false)
   const router = useRouter()
@@ -617,12 +619,12 @@ function OppCard({ opp, authUser, profile, saved, onSave }: {
       onMouseLeave={() => setHovered(false)}
       style={{
         backgroundColor: '#ffffff',
-        border: `1px solid ${hovered ? '#d4a017' : '#e2e8f0'}`,
+        border: `1px solid ${isCompared ? '#d4a017' : hovered ? '#d4a017' : '#e2e8f0'}`,
         borderRadius: '12px', padding: '18px',
         display: 'flex', flexDirection: 'column', gap: '10px',
         cursor: 'pointer',
         transition: 'border-color 0.2s, box-shadow 0.2s, transform 0.15s',
-        boxShadow: hovered ? '0 4px 20px rgba(0,0,0,0.08)' : '0 1px 3px rgba(0,0,0,0.04)',
+        boxShadow: isCompared ? '0 0 0 2px #fcd34d' : hovered ? '0 4px 20px rgba(0,0,0,0.08)' : '0 1px 3px rgba(0,0,0,0.04)',
         transform: hovered ? 'translateY(-1px)' : 'none',
       }}
       onClick={() => router.push(`/opportunities/${opp.id}`)}
@@ -630,16 +632,37 @@ function OppCard({ opp, authUser, profile, saved, onSave }: {
       {/* Top row */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
         <MatchBadge authUser={authUser} profile={profile} opp={opp} />
-        <button
-          onClick={e => { e.stopPropagation(); onSave(opp.id) }}
-          aria-label="Save"
-          style={{
-            background: 'none', border: 'none', cursor: 'pointer',
-            color: saved ? '#d4a017' : '#cbd5e1', padding: '2px', display: 'flex', flexShrink: 0,
-          }}
-        >
-          <Bookmark size={16} fill={saved ? '#d4a017' : 'none'} />
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          {authUser && onToggleCompare && (
+            <button
+              onClick={e => { e.stopPropagation(); onToggleCompare(opp.id) }}
+              aria-label="Compare"
+              title={isCompared ? 'Remove from comparison' : 'Add to comparison'}
+              style={{
+                background: isCompared ? '#fef9ee' : 'none',
+                border: `1px solid ${isCompared ? '#d4a017' : 'transparent'}`,
+                borderRadius: '4px',
+                cursor: 'pointer',
+                color: isCompared ? '#d4a017' : '#cbd5e1',
+                padding: '2px 5px',
+                display: 'flex', alignItems: 'center', gap: '2px',
+                fontSize: '10px', fontWeight: 600, flexShrink: 0,
+              }}
+            >
+              {isCompared ? '✓' : '+'} Compare
+            </button>
+          )}
+          <button
+            onClick={e => { e.stopPropagation(); onSave(opp.id) }}
+            aria-label="Save"
+            style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              color: saved ? '#d4a017' : '#cbd5e1', padding: '2px', display: 'flex', flexShrink: 0,
+            }}
+          >
+            <Bookmark size={16} fill={saved ? '#d4a017' : 'none'} />
+          </button>
+        </div>
       </div>
 
       {/* Category badge */}
@@ -747,6 +770,7 @@ function OpportunitiesContent() {
       ? { ...DEFAULT_FILTERS, types: [typeParam] }
       : DEFAULT_FILTERS
   })
+  const [compareIds, setCompareIds] = useState<string[]>([])
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState('Newest')
   const [allResults, setAllResults] = useState<Opp[]>([])
@@ -874,6 +898,14 @@ function OpportunitiesContent() {
     }
   }
 
+  function toggleCompare(id: string) {
+    setCompareIds(prev => {
+      if (prev.includes(id)) return prev.filter(x => x !== id)
+      if (prev.length >= 3) return prev
+      return [...prev, id]
+    })
+  }
+
   const displayed = allResults.slice(0, displayCount)
   const hasMore = displayCount < allResults.length
 
@@ -967,6 +999,8 @@ function OpportunitiesContent() {
                   profile={matchProfile}
                   saved={savedIds.has(opp.id)}
                   onSave={handleSave}
+                  isCompared={compareIds.includes(opp.id)}
+                  onToggleCompare={authUser ? toggleCompare : undefined}
                 />
               ))}
             </div>
@@ -989,6 +1023,69 @@ function OpportunitiesContent() {
           </>
         )}
       </main>
+
+      {/* Comparison bar */}
+      {compareIds.length > 0 && (
+        <div style={{
+          position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50,
+          backgroundColor: '#0a1628', borderTop: '2px solid #d4a017',
+          padding: '12px 24px',
+          display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap',
+        }}>
+          <span style={{ fontSize: '13px', fontWeight: 700, color: '#d4a017', flexShrink: 0 }}>
+            Compare ({compareIds.length}/3):
+          </span>
+          <div style={{ display: 'flex', gap: '8px', flex: 1, flexWrap: 'wrap' }}>
+            {compareIds.map(id => {
+              const opp = allResults.find(o => o.id === id)
+              return opp ? (
+                <div
+                  key={id}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '6px',
+                    backgroundColor: 'rgba(255,255,255,0.1)',
+                    borderRadius: '6px', padding: '4px 10px',
+                  }}
+                >
+                  <span style={{ fontSize: '12px', color: '#fff', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {opp.title}
+                  </span>
+                  <button
+                    onClick={() => toggleCompare(id)}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', padding: '0', display: 'flex', lineHeight: 1 }}
+                    aria-label="Remove"
+                  >
+                    <X size={12} />
+                  </button>
+                </div>
+              ) : null
+            })}
+          </div>
+          <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
+            <button
+              onClick={() => setCompareIds([])}
+              style={{
+                background: 'none', border: '1px solid rgba(255,255,255,0.2)',
+                borderRadius: '6px', color: '#94a3b8', fontSize: '12px',
+                padding: '6px 12px', cursor: 'pointer', fontFamily: 'inherit',
+              }}
+            >
+              Clear all
+            </button>
+            <a
+              href={`/compare?ids=${compareIds.join(',')}`}
+              style={{
+                display: 'inline-block',
+                backgroundColor: '#d4a017', color: '#0a1628',
+                borderRadius: '6px', padding: '7px 18px',
+                fontSize: '13px', fontWeight: 700, textDecoration: 'none',
+              }}
+            >
+              View Comparison
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
