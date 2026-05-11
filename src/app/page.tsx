@@ -30,6 +30,13 @@ interface Stats {
   users: number
 }
 
+interface HomeStory {
+  id: string
+  user_name: string | null
+  story: string | null
+  opportunity: { title: string; organization_name: string | null } | null
+}
+
 // ─── Category config ──────────────────────────────────────────────────────────
 
 const CATEGORY_ICONS: Record<string, LucideIcon> = {
@@ -355,6 +362,7 @@ export default function HomePage() {
   const [stats, setStats] = useState<Stats>({ totalOpps: 0, countries: 0, users: 0 })
   const [typeCounts, setTypeCounts] = useState<Record<string, number>>({})
   const [featured, setFeatured] = useState<FeaturedOpp[]>([])
+  const [homeStories, setHomeStories] = useState<HomeStory[]>([])
   const [loaded, setLoaded] = useState(false)
 
   // Redirect logged-in users
@@ -372,6 +380,7 @@ export default function HomePage() {
       { data: featuredRows },
       { data: countryRows },
       { count: userCount },
+      { data: storyRows },
     ] = await Promise.all([
       supabase
         .from('opportunities')
@@ -397,6 +406,13 @@ export default function HomePage() {
       supabase
         .from('profiles')
         .select('*', { count: 'exact', head: true }),
+      supabase
+        .from('success_stories')
+        .select('id, user_name, story, opportunity:opportunities(title, organization_name)')
+        .eq('status', 'approved')
+        .eq('outcome', 'got_it')
+        .order('created_at', { ascending: false })
+        .limit(3),
     ])
 
     const countrySet = new Set(
@@ -417,6 +433,11 @@ export default function HomePage() {
     })
     setTypeCounts(counts)
     setFeatured((featuredRows ?? []) as FeaturedOpp[])
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setHomeStories((storyRows ?? []).map((s: any) => ({
+      ...s,
+      opportunity: Array.isArray(s.opportunity) ? s.opportunity[0] ?? null : s.opportunity,
+    })) as HomeStory[])
     setLoaded(true)
   }, [])
 
@@ -765,7 +786,47 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── SECTION 6: FINAL CTA ─────────────────────────────────────────── */}
+      {/* ── SECTION 6: SUCCESS STORIES ───────────────────────────────────── */}
+      {homeStories.length > 0 && (
+        <section style={{ padding: '80px 48px', backgroundColor: '#ffffff', textAlign: 'center' }}>
+          <Reveal>
+            <h2 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 800, color: '#0a1628', margin: '0 0 8px', letterSpacing: '-0.5px' }}>
+              Real success stories 🏆
+            </h2>
+            <p style={{ color: '#64748b', fontSize: '15px', margin: '0 0 48px' }}>
+              From our community — people who found their opportunity through TANC.
+            </p>
+          </Reveal>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px', maxWidth: '960px', margin: '0 auto' }}>
+            {homeStories.map((s, i) => (
+              <Reveal key={s.id} delay={i * 80}>
+                <div style={{ backgroundColor: '#fefce8', border: '1px solid #fde68a', borderRadius: '14px', padding: '22px', textAlign: 'left', height: '100%', boxSizing: 'border-box' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#d4a017', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <span style={{ color: '#ffffff', fontWeight: 800, fontSize: '15px' }}>
+                        {(s.user_name ?? '?').charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 700, fontSize: '14px', color: '#0a1628' }}>{s.user_name ?? 'Anonymous'}</div>
+                      {s.opportunity?.title && (
+                        <div style={{ fontSize: '11px', color: '#92400e', fontWeight: 600 }}>{s.opportunity.title}</div>
+                      )}
+                    </div>
+                  </div>
+                  {s.story && (
+                    <p style={{ fontSize: '13px', color: '#44403c', lineHeight: 1.65, margin: 0, fontStyle: 'italic' }}>
+                      &ldquo;{s.story}&rdquo;
+                    </p>
+                  )}
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ── SECTION 7: FINAL CTA ─────────────────────────────────────────── */}
       <section style={{
         padding: '80px 48px',
         backgroundColor: '#0a1628',

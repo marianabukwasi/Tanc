@@ -174,6 +174,7 @@ export default function TrackerPage() {
   const [entries, setEntries]   = useState<TrackerEntry[]>([])
   const [loading, setLoading]   = useState(true)
   const [activeTab, setActiveTab] = useState<string>('All')
+  const [submittedStoryIds, setSubmittedStoryIds] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     async function load() {
@@ -198,6 +199,14 @@ export default function TrackerPage() {
       // Filter out rows where the opportunity was deleted
       const valid = (data ?? []).filter((r: Record<string, unknown>) => r.opportunities !== null) as TrackerEntry[]
       setEntries(valid)
+
+      // Fetch already-submitted story opportunity IDs
+      const { data: stories } = await supabase
+        .from('success_stories')
+        .select('opportunity_id')
+        .eq('user_id', user.id)
+      setSubmittedStoryIds(new Set((stories ?? []).map(s => s.opportunity_id as string)))
+
       setLoading(false)
     }
     load()
@@ -320,6 +329,7 @@ export default function TrackerPage() {
                 entry={entry}
                 onRemove={handleRemove}
                 onUpdate={handleUpdate}
+                storySubmitted={submittedStoryIds.has(entry.opportunity_id)}
               />
             ))}
           </div>

@@ -95,6 +95,38 @@ export async function POST(request: Request) {
     }
   }
 
+  // Add org followers regardless of match score
+  const orgName: string | null = rawOpp.organization_name ?? null
+  if (orgName) {
+    const { data: followers } = await supabase
+      .from('user_organisation_follows')
+      .select('user_id')
+      .eq('organisation_name', orgName)
+      .limit(500)
+
+    if (followers && followers.length > 0) {
+      const existingIds = new Set(sendList.map(u => u.email))
+      const followerIds = followers.map(f => f.user_id as string)
+
+      const { data: followerProfiles } = await supabase
+        .from('profiles')
+        .select('id, email, first_name, last_name')
+        .in('id', followerIds)
+        .not('email', 'is', null)
+
+      for (const p of followerProfiles ?? []) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const raw2 = p as Record<string, any>
+        const email = raw2.email as string
+        if (!existingIds.has(email)) {
+          const name = [raw2.first_name, raw2.last_name].filter(Boolean).join(' ') || 'there'
+          sendList.push({ email, name, score: 0 })
+          existingIds.add(email)
+        }
+      }
+    }
+  }
+
   if (sendList.length === 0) {
     return NextResponse.json({ sent: 0 })
   }

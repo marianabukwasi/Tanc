@@ -95,10 +95,11 @@ function buildDefaultTasks(opp: OppDetail): Task[] {
 
 // ─── TrackerCard ──────────────────────────────────────────────────────────────
 
-export default function TrackerCard({ entry, onRemove, onUpdate }: {
+export default function TrackerCard({ entry, onRemove, onUpdate, storySubmitted = false }: {
   entry: TrackerEntry
   onRemove: (id: string) => void
   onUpdate: (id: string, patch: Partial<Pick<TrackerEntry, 'status' | 'notes' | 'tasks'>>) => void
+  storySubmitted?: boolean
 }) {
   const opp = entry.opportunities
 
@@ -109,6 +110,48 @@ export default function TrackerCard({ entry, onRemove, onUpdate }: {
   const [newTask, setNewTask]       = useState('')
   const [showConfirm, setShowConfirm] = useState(false)
   const [saving, setSaving]         = useState(false)
+  const [storyPhase, setStoryPhase] = useState<null | 'prompt' | 'form' | 'done'>(null)
+  const [storyName, setStoryName]   = useState('')
+  const [storyText, setStoryText]   = useState('')
+  const [storySaving, setStorySaving] = useState(false)
+
+  // Show story prompt for past-deadline entries not yet responded to
+  useEffect(() => {
+    if (!storySubmitted && days !== null && days < 0) {
+      setStoryPhase('prompt')
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  async function handleOutcome(outcome: string) {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+    await supabase.from('success_stories').insert({
+      user_id: user.id,
+      opportunity_id: opp.id,
+      outcome,
+      status: 'pending',
+    })
+    setStoryPhase('done')
+  }
+
+  async function submitStory() {
+    if (!storyName.trim() || !storyText.trim()) return
+    setStorySaving(true)
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user) {
+      await supabase.from('success_stories').insert({
+        user_id: user.id,
+        opportunity_id: opp.id,
+        user_name: storyName.trim(),
+        story: storyText.trim(),
+        outcome: 'got_it',
+        status: 'pending',
+      })
+    }
+    setStorySaving(false)
+    setStoryPhase('done')
+  }
 
   // Initialise tasks from DB or generate defaults on first render
   useEffect(() => {
@@ -379,6 +422,84 @@ export default function TrackerCard({ entry, onRemove, onUpdate }: {
           }}
         />
       </div>
+
+      {/* ── Story prompt (past deadline) ────────────────────────────────────── */}
+      {storyPhase !== null && storyPhase !== 'done' && (
+        <div style={{ borderTop: '1px solid #fde68a', padding: '14px 20px', backgroundColor: '#fefce8' }}>
+          {storyPhase === 'prompt' && (
+            <>
+              <div style={{ fontSize: '13px', fontWeight: 600, color: '#92400e', marginBottom: '10px' }}>
+                🎯 Did you apply for <em>{opp.title}</em>?
+              </div>
+              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                <button
+                  onClick={() => setStoryPhase('form')}
+                  style={{ padding: '6px 14px', border: 'none', borderRadius: '8px', backgroundColor: '#15803d', color: '#ffffff', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}
+                >
+                  🏆 I got it!
+                </button>
+                <button
+                  onClick={() => handleOutcome('applied_didnt_get')}
+                  style={{ padding: '6px 14px', border: '1px solid #e2e8f0', borderRadius: '8px', backgroundColor: '#ffffff', color: '#475569', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}
+                >
+                  I applied, didn&apos;t get it
+                </button>
+                <button
+                  onClick={() => handleOutcome('didnt_apply')}
+                  style={{ padding: '6px 14px', border: '1px solid #e2e8f0', borderRadius: '8px', backgroundColor: '#ffffff', color: '#475569', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}
+                >
+                  I didn&apos;t apply
+                </button>
+              </div>
+            </>
+          )}
+
+          {storyPhase === 'form' && (
+            <>
+              <div style={{ fontSize: '13px', fontWeight: 700, color: '#15803d', marginBottom: '10px' }}>
+                🎉 Congratulations! Share your story to inspire others.
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <input
+                  type="text"
+                  value={storyName}
+                  onChange={e => setStoryName(e.target.value)}
+                  placeholder="Your name (shown publicly)"
+                  style={{ height: '36px', border: '1px solid #fde68a', borderRadius: '7px', padding: '0 10px', fontSize: '13px', fontFamily: 'inherit', outline: 'none', backgroundColor: '#ffffff' }}
+                />
+                <textarea
+                  value={storyText}
+                  onChange={e => setStoryText(e.target.value)}
+                  placeholder="2–3 sentences about your experience…"
+                  rows={3}
+                  style={{ border: '1px solid #fde68a', borderRadius: '7px', padding: '8px 10px', fontSize: '13px', fontFamily: 'inherit', resize: 'vertical', outline: 'none', backgroundColor: '#ffffff' }}
+                />
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button
+                    onClick={submitStory}
+                    disabled={storySaving || !storyName.trim() || !storyText.trim()}
+                    style={{ padding: '7px 16px', border: 'none', borderRadius: '7px', backgroundColor: storySaving ? '#b8891a' : '#d4a017', color: '#ffffff', fontSize: '12px', fontWeight: 700, cursor: storySaving ? 'not-allowed' : 'pointer' }}
+                  >
+                    {storySaving ? 'Submitting…' : 'Submit story'}
+                  </button>
+                  <button
+                    onClick={() => setStoryPhase('prompt')}
+                    style={{ padding: '7px 12px', border: '1px solid #e2e8f0', borderRadius: '7px', backgroundColor: '#ffffff', color: '#64748b', fontSize: '12px', cursor: 'pointer' }}
+                  >
+                    Back
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {storyPhase === 'done' && (
+        <div style={{ borderTop: '1px solid #dcfce7', padding: '10px 20px', backgroundColor: '#f0fdf4', fontSize: '12px', color: '#15803d', fontWeight: 600 }}>
+          ✓ Thanks for sharing! Your response has been recorded.
+        </div>
+      )}
     </div>
   )
 }
