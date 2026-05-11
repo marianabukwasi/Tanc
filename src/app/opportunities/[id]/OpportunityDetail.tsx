@@ -9,7 +9,7 @@ import {
 } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
-import { calculateMatch } from '@/lib/matching'
+import { calculateMatchResult } from '@/lib/matchEngine'
 import type { MatchInfo } from '@/lib/matching'
 import AdBanner from '@/components/AdBanner'
 
@@ -80,7 +80,7 @@ interface Profile {
   date_of_birth: string | null
   education_level: string | null
   field_of_study: string | null
-  languages: { language: string; level?: string }[] | string[] | null
+  languages: { name: string; level?: string }[] | string[] | null
   gpa_value: number | null
   gpa_scale: number | null
   years_work_experience: number | null
@@ -111,11 +111,11 @@ function ageFromDob(dob: string | null): number | null {
   return Math.floor(diff / (365.25 * 24 * 3600 * 1000))
 }
 
-function langNames(langs: { language: string }[] | string[] | null): string[] {
+function langNames(langs: { name?: string; language?: string }[] | string[] | null): string[] {
   if (!langs || !langs.length) return []
-  return (langs as (string | { language: string })[]).map(l =>
-    typeof l === 'string' ? l : l.language
-  )
+  return (langs as (string | { name?: string; language?: string })[]).map(l =>
+    typeof l === 'string' ? l : (l.name ?? l.language ?? '')
+  ).filter(Boolean)
 }
 
 const TYPE_COLORS: Record<string, { bg: string; color: string }> = {
@@ -350,32 +350,47 @@ export default function OpportunityDetail({ id }: { id: string }) {
     if (user === null) { setMatchInfo({ state: 'anonymous' }); return }
     if (!profile) { setMatchInfo({ state: 'incomplete' }); return }
 
-    const pct = profile.profile_complete_pct ?? 0
-    const age = ageFromDob(profile.date_of_birth)
-    const nat = profile.nationalities?.[0] ?? ''
-    const langs = langNames(profile.languages)
-
-    const result = calculateMatch(
+    const result = calculateMatchResult(
       {
-        nationality: nat,
-        education_level: profile.education_level ?? '',
-        field_of_study: profile.field_of_study ?? '',
-        languages: langs,
-        age,
-        profile_complete: pct,
+        nationalities: profile.nationalities,
+        date_of_birth: profile.date_of_birth,
+        education_level: profile.education_level,
+        field_of_study: profile.field_of_study,
+        languages: profile.languages,
+        gpa_value: profile.gpa_value,
+        gpa_scale: profile.gpa_scale,
+        years_work_experience: profile.years_work_experience,
+        has_passport: profile.has_passport,
+        has_transcripts: profile.has_transcripts,
+        recommendation_letters_count: profile.recommendation_letters_count,
       },
       {
-        eligibility_countries: opp.required_nationalities,
-        education_level: opp.min_education_level,
-        field: opp.required_fields_of_study?.[0] ?? null,
-        language_requirements: langNames(opp.required_languages),
+        required_nationalities: opp.required_nationalities,
+        excluded_nationalities: opp.excluded_nationalities ?? null,
+        min_education_level: opp.min_education_level,
+        required_fields_of_study: opp.required_fields_of_study,
+        min_gpa: opp.min_gpa,
+        gpa_scale: opp.gpa_scale,
+        required_languages: opp.required_languages,
         min_age: opp.min_age,
         max_age: opp.max_age,
+        min_work_experience_years: opp.min_work_experience_years,
+        requires_passport: opp.requires_passport,
+        requires_transcripts: opp.requires_transcripts,
+        requires_recommendations: opp.requires_recommendations,
+        min_recommendations: opp.min_recommendations,
       }
     )
 
-    if (!result) { setMatchInfo({ state: 'incomplete' }); return }
-    setMatchInfo({ state: 'score', value: result.score, isEstimate: result.isEstimate })
+    setMatchInfo({ state: 'score', value: result.score, isEstimate: result.gaps.length > 0 && result.score > 60 })
+
+    // Cache score on detail view
+    if (user) {
+      supabase.from('user_opportunities').upsert(
+        { user_id: user.id, opportunity_id: opp.id, match_score: result.score },
+        { onConflict: 'user_id,opportunity_id' }
+      ).then(() => {})
+    }
   }, [opp, user, profile])
 
   async function toggleSave() {

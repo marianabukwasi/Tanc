@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { Bookmark, Search, ChevronDown, ChevronUp, ExternalLink, X } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
-import { calculateMatch, type MatchProfile } from '@/lib/matching'
+import { calculateMatchResult, type EngineProfile, type RequiredLang } from '@/lib/matchEngine'
 import { COUNTRIES } from '@/lib/constants'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -24,8 +24,18 @@ interface Opp {
   ticket_affiliate_url: string | null
   min_education_level: string | null
   required_nationalities: string[] | null
+  excluded_nationalities: string[] | null
+  required_fields_of_study: string[] | null
+  min_gpa: number | null
+  gpa_scale: number | null
+  required_languages: RequiredLang[] | string[] | null
   min_age: number | null
   max_age: number | null
+  min_work_experience_years: number | null
+  requires_passport: boolean | null
+  requires_transcripts: boolean | null
+  requires_recommendations: boolean | null
+  min_recommendations: number | null
   no_ielts_required: boolean
   open_to_africans: boolean
   open_to_developing: boolean
@@ -516,7 +526,7 @@ function Sidebar({ filters, onChange, onReset }: {
 
 function MatchBadge({ authUser, profile, opp }: {
   authUser: User | null | undefined
-  profile: MatchProfile | null
+  profile: EngineProfile | null
   opp: Opp
 }) {
   if (authUser === undefined) return <div style={{ width: '44px', height: '44px' }} />
@@ -553,31 +563,27 @@ function MatchBadge({ authUser, profile, opp }: {
     )
   }
 
-  const result = calculateMatch(profile, {
-    eligibility_countries: opp.required_nationalities,
-    education_level: opp.min_education_level,
-    field: null,
-    language_requirements: null,
+  const result = calculateMatchResult(profile, {
+    required_nationalities: opp.required_nationalities,
+    excluded_nationalities: opp.excluded_nationalities,
+    min_education_level: opp.min_education_level,
+    required_fields_of_study: opp.required_fields_of_study,
+    min_gpa: opp.min_gpa,
+    gpa_scale: opp.gpa_scale,
+    required_languages: opp.required_languages,
     min_age: opp.min_age,
     max_age: opp.max_age,
+    min_work_experience_years: opp.min_work_experience_years,
+    requires_passport: opp.requires_passport,
+    requires_transcripts: opp.requires_transcripts,
+    requires_recommendations: opp.requires_recommendations,
+    min_recommendations: opp.min_recommendations,
   })
 
-  if (!result) {
-    return (
-      <div style={{
-        width: '44px', height: '44px', borderRadius: '50%', border: '2px solid #e2e8f0',
-        backgroundColor: '#f8fafc', display: 'flex', alignItems: 'center',
-        justifyContent: 'center', flexShrink: 0,
-      }}>
-        <span style={{ fontSize: '9px', color: '#94a3b8', textAlign: 'center', lineHeight: 1.2 }}>Fill profile</span>
-      </div>
-    )
-  }
-
-  const { score } = result
-  const color  = score >= 70 ? '#15803d' : score >= 50 ? '#d4a017' : '#64748b'
-  const bg     = score >= 70 ? '#f0fdf4' : score >= 50 ? '#fef9e7' : '#f8fafc'
-  const border = score >= 70 ? '#86efac' : score >= 50 ? '#fcd34d' : '#e2e8f0'
+  const { score, tier } = result
+  const color  = tier === 'apply_now' ? '#15803d' : tier === 'almost_there' ? '#d4a017' : '#64748b'
+  const bg     = tier === 'apply_now' ? '#f0fdf4' : tier === 'almost_there' ? '#fef9e7' : '#f8fafc'
+  const border = tier === 'apply_now' ? '#86efac' : tier === 'almost_there' ? '#fcd34d' : '#e2e8f0'
 
   return (
     <div style={{
@@ -595,7 +601,7 @@ function MatchBadge({ authUser, profile, opp }: {
 function OppCard({ opp, authUser, profile, saved, onSave }: {
   opp: Opp
   authUser: User | null | undefined
-  profile: MatchProfile | null
+  profile: EngineProfile | null
   saved: boolean
   onSave: (id: string) => void
 }) {
@@ -747,7 +753,7 @@ function OpportunitiesContent() {
   const [displayCount, setDisplayCount] = useState(PAGE_SIZE)
   const [loading, setLoading] = useState(true)
   const [authUser, setAuthUser] = useState<User | null | undefined>(undefined)
-  const [matchProfile, setMatchProfile] = useState<MatchProfile | null>(null)
+  const [matchProfile, setMatchProfile] = useState<EngineProfile | null>(null)
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set())
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -761,25 +767,24 @@ function OpportunitiesContent() {
 
       const [{ data: prof }, { data: savedRows }] = await Promise.all([
         supabase.from('profiles').select(
-          'nationalities,education_level,field_of_study,languages,date_of_birth,profile_complete_pct'
+          'nationalities,education_level,field_of_study,languages,date_of_birth,gpa_value,gpa_scale,years_work_experience,has_passport,has_transcripts,recommendation_letters_count'
         ).eq('id', user.id).single(),
         supabase.from('saved_opportunities').select('opportunity_id').eq('user_id', user.id),
       ])
 
       if (prof) {
-        const dob = prof.date_of_birth
-          ? Math.floor((Date.now() - new Date(prof.date_of_birth).getTime()) / 31557600000)
-          : null
-        const langs = Array.isArray(prof.languages)
-          ? (prof.languages as Array<{ name?: string }>).map(l => l.name ?? '').filter(Boolean)
-          : []
         setMatchProfile({
-          nationality: Array.isArray(prof.nationalities) ? (prof.nationalities[0] ?? '') : '',
-          education_level: prof.education_level ?? '',
-          field_of_study: prof.field_of_study ?? '',
-          languages: langs,
-          age: dob,
-          profile_complete: prof.profile_complete_pct ?? 0,
+          nationalities: Array.isArray(prof.nationalities) ? prof.nationalities : null,
+          date_of_birth: prof.date_of_birth ?? null,
+          education_level: prof.education_level ?? null,
+          field_of_study: prof.field_of_study ?? null,
+          languages: Array.isArray(prof.languages) ? prof.languages : null,
+          gpa_value: prof.gpa_value ?? null,
+          gpa_scale: prof.gpa_scale ?? null,
+          years_work_experience: prof.years_work_experience ?? null,
+          has_passport: prof.has_passport ?? null,
+          has_transcripts: prof.has_transcripts ?? null,
+          recommendation_letters_count: prof.recommendation_letters_count ?? null,
         })
       }
 
@@ -797,17 +802,44 @@ function OpportunitiesContent() {
     setDisplayCount(PAGE_SIZE)
     const data = await fetchOpps(filters, search, sort)
 
-    // Client-side Best Match sort
-    if (sort === 'Best Match' && matchProfile) {
-      data.sort((a, b) => {
-        const scoreOf = (o: Opp) => calculateMatch(matchProfile, {
-          eligibility_countries: o.required_nationalities,
-          education_level: o.min_education_level,
-          field: null, language_requirements: null,
-          min_age: o.min_age, max_age: o.max_age,
-        })?.score ?? -1
-        return scoreOf(b) - scoreOf(a)
+    // Client-side Best Match sort + caching
+    if (matchProfile) {
+      const oppToEngine = (o: Opp) => ({
+        required_nationalities: o.required_nationalities,
+        excluded_nationalities: o.excluded_nationalities,
+        min_education_level: o.min_education_level,
+        required_fields_of_study: o.required_fields_of_study,
+        min_gpa: o.min_gpa,
+        gpa_scale: o.gpa_scale,
+        required_languages: o.required_languages,
+        min_age: o.min_age,
+        max_age: o.max_age,
+        min_work_experience_years: o.min_work_experience_years,
+        requires_passport: o.requires_passport,
+        requires_transcripts: o.requires_transcripts,
+        requires_recommendations: o.requires_recommendations,
+        min_recommendations: o.min_recommendations,
       })
+
+      // Pre-compute all scores once
+      const scoreMap = new Map<string, number>()
+      for (const o of data) {
+        scoreMap.set(o.id, calculateMatchResult(matchProfile, oppToEngine(o)).score)
+      }
+
+      if (sort === 'Best Match') {
+        data.sort((a, b) => (scoreMap.get(b.id) ?? -1) - (scoreMap.get(a.id) ?? -1))
+      }
+
+      // Cache scores for displayed items in user_opportunities (fire-and-forget)
+      if (authUser) {
+        const upsertRows = data.slice(0, 48).map(o => ({
+          user_id: authUser.id,
+          opportunity_id: o.id,
+          match_score: scoreMap.get(o.id) ?? 0,
+        }))
+        supabase.from('user_opportunities').upsert(upsertRows, { onConflict: 'user_id,opportunity_id' }).then(() => {})
+      }
     }
 
     setAllResults(data)
