@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import Script from 'next/script'
 import './globals.css'
 import ChatAssistant from '@/components/ChatAssistant'
+import NavBar from '@/components/Navbar'
 
 export const metadata: Metadata = {
   title: 'TANC — Every Opportunity. One Place.',
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         )}
       </head>
       <body>
+        <NavBar />
         {children}
         <ChatAssistant />
       </body>

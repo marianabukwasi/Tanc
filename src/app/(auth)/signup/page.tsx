@@ -1,9 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { Star } from 'lucide-react'
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase/client'
 import AuthRightPanel from '@/components/AuthRightPanel'
 
 const inputStyle: React.CSSProperties = {
@@ -21,44 +20,49 @@ const inputStyle: React.CSSProperties = {
 }
 
 export default function SignupPage() {
-  const router = useRouter()
-  const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError('')
     try {
-      const { data, error: authError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { full_name: fullName } },
-      })
+      const supabase = createClient()
+      const { error: authError } = await supabase.auth.signUp({ email, password })
       if (authError) throw authError
-      if (!data.user) throw new Error('Signup failed — please try again.')
-
-      // Create profile row (ignore duplicate errors)
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({ id: data.user.id, email, full_name: fullName, profile_complete: 0 })
-      if (profileError && profileError.code !== '23505') {
-        console.warn('Profile insert error:', profileError.message)
-      }
-
-      router.push('/profile/setup')
+      setSuccess(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong.')
+    } finally {
       setLoading(false)
+    }
+  }
+
+  async function handleGoogle() {
+    setGoogleLoading(true)
+    setError('')
+    try {
+      const supabase = createClient()
+      const { error: authError } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      })
+      if (authError) throw authError
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong.')
+      setGoogleLoading(false)
     }
   }
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh' }}>
-      {/* ── Left ──────────────────────────────────────────────────────────── */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '40px 48px', backgroundColor: '#ffffff', overflowY: 'auto' }}>
         <a href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none', marginBottom: '48px' }}>
           <Star size={14} fill="#d4a017" color="#d4a017" />
@@ -66,92 +70,133 @@ export default function SignupPage() {
         </a>
 
         <div style={{ maxWidth: '400px', width: '100%' }}>
-          <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#0a1628', margin: '0 0 8px' }}>
-            Join TANC for free
-          </h1>
-          <p style={{ color: '#475569', fontSize: '15px', margin: '0 0 32px' }}>
-            Discover opportunities matched to your profile
-          </p>
-
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div>
-              <label style={{ fontSize: '13px', fontWeight: 600, color: '#0a1628', display: 'block', marginBottom: '6px' }}>
-                Full Name
-              </label>
-              <input
-                type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                required
-                placeholder="Your full name"
-                style={inputStyle}
-              />
+          {success ? (
+            <div style={{ textAlign: 'center', padding: '40px 0' }}>
+              <div style={{ fontSize: '48px', marginBottom: '24px' }}>📬</div>
+              <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#0a1628', margin: '0 0 12px' }}>
+                Check your email
+              </h1>
+              <p style={{ color: '#475569', fontSize: '15px', lineHeight: 1.6 }}>
+                We sent a confirmation link to <strong>{email}</strong>. Click it to activate your account.
+              </p>
+              <a
+                href="/login"
+                style={{ display: 'inline-block', marginTop: '32px', color: '#d4a017', fontWeight: 600, textDecoration: 'none', fontSize: '14px' }}
+              >
+                Back to login
+              </a>
             </div>
+          ) : (
+            <>
+              <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#0a1628', margin: '0 0 8px' }}>
+                Join TANC for free
+              </h1>
+              <p style={{ color: '#475569', fontSize: '15px', margin: '0 0 32px' }}>
+                Discover opportunities matched to your profile
+              </p>
 
-            <div>
-              <label style={{ fontSize: '13px', fontWeight: 600, color: '#0a1628', display: 'block', marginBottom: '6px' }}>
-                Email
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                placeholder="you@example.com"
-                style={inputStyle}
-              />
-            </div>
+              <button
+                onClick={handleGoogle}
+                disabled={googleLoading}
+                style={{
+                  width: '100%',
+                  height: '48px',
+                  backgroundColor: '#ffffff',
+                  color: '#0a1628',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '8px',
+                  fontSize: '15px',
+                  fontWeight: 600,
+                  cursor: googleLoading ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '10px',
+                  marginBottom: '24px',
+                  fontFamily: 'inherit',
+                }}
+              >
+                <svg width="18" height="18" viewBox="0 0 18 18">
+                  <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
+                  <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
+                  <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/>
+                  <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+                </svg>
+                {googleLoading ? 'Redirecting…' : 'Continue with Google'}
+              </button>
 
-            <div>
-              <label style={{ fontSize: '13px', fontWeight: 600, color: '#0a1628', display: 'block', marginBottom: '6px' }}>
-                Password
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                placeholder="Min. 8 characters"
-                minLength={8}
-                style={inputStyle}
-              />
-            </div>
-
-            {error && (
-              <div style={{ backgroundColor: '#fff1f2', border: '1px solid #fecdd3', color: '#be123c', fontSize: '13px', padding: '10px 14px', borderRadius: '8px' }}>
-                {error}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+                <div style={{ flex: 1, height: '1px', backgroundColor: '#e2e8f0' }} />
+                <span style={{ color: '#94a3b8', fontSize: '13px' }}>or</span>
+                <div style={{ flex: 1, height: '1px', backgroundColor: '#e2e8f0' }} />
               </div>
-            )}
 
-            <button
-              type="submit"
-              disabled={loading}
-              style={{
-                width: '100%',
-                height: '48px',
-                backgroundColor: loading ? '#e2c76a' : '#d4a017',
-                color: '#ffffff',
-                border: 'none',
-                borderRadius: '8px',
-                fontSize: '15px',
-                fontWeight: 600,
-                cursor: loading ? 'not-allowed' : 'pointer',
-                marginTop: '8px',
-                fontFamily: 'inherit',
-              }}
-            >
-              {loading ? 'Creating account…' : 'Sign Up'}
-            </button>
-          </form>
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div>
+                  <label style={{ fontSize: '13px', fontWeight: 600, color: '#0a1628', display: 'block', marginBottom: '6px' }}>
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    placeholder="you@example.com"
+                    style={inputStyle}
+                  />
+                </div>
 
-          <p style={{ color: '#475569', fontSize: '14px', marginTop: '24px', textAlign: 'center' }}>
-            Already have an account?{' '}
-            <a href="/signin" style={{ color: '#d4a017', fontWeight: 600, textDecoration: 'none' }}>Sign in</a>
-          </p>
+                <div>
+                  <label style={{ fontSize: '13px', fontWeight: 600, color: '#0a1628', display: 'block', marginBottom: '6px' }}>
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    placeholder="Min. 8 characters"
+                    minLength={8}
+                    style={inputStyle}
+                  />
+                </div>
+
+                {error && (
+                  <div style={{ backgroundColor: '#fff1f2', border: '1px solid #fecdd3', color: '#be123c', fontSize: '13px', padding: '10px 14px', borderRadius: '8px' }}>
+                    {error}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  style={{
+                    width: '100%',
+                    height: '48px',
+                    backgroundColor: loading ? '#e2c76a' : '#d4a017',
+                    color: '#ffffff',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '15px',
+                    fontWeight: 600,
+                    cursor: loading ? 'not-allowed' : 'pointer',
+                    marginTop: '8px',
+                    fontFamily: 'inherit',
+                  }}
+                >
+                  {loading ? 'Creating account…' : 'Create Account'}
+                </button>
+              </form>
+
+              <p style={{ color: '#475569', fontSize: '14px', marginTop: '24px', textAlign: 'center' }}>
+                Already have an account?{' '}
+                <a href="/login" style={{ color: '#d4a017', fontWeight: 600, textDecoration: 'none' }}>Sign in</a>
+              </p>
+            </>
+          )}
         </div>
       </div>
 
-      {/* ── Right ─────────────────────────────────────────────────────────── */}
       <AuthRightPanel />
     </div>
   )
