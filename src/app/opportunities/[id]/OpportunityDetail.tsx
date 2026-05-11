@@ -15,6 +15,13 @@ import type { MatchInfo } from '@/lib/matching'
 import AdBanner from '@/components/AdBanner'
 import GapAnalysis from '@/components/GapAnalysis'
 import VisaIndicator from '@/components/VisaIndicator'
+import {
+  generateTicketLink,
+  generateBookingLink,
+  trackedUrl,
+  TICKET_TYPES,
+  RETREAT_TYPES,
+} from '@/lib/affiliates'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -807,18 +814,49 @@ export default function OpportunityDetail({ id }: { id: string }) {
             </button>
           )}
 
-          {/* 6. Get Tickets */}
-          {opp.ticket_affiliate_url && (
-            <a
-              href={opp.ticket_affiliate_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', padding: '12px', backgroundColor: '#d4a017', color: '#fff', borderRadius: '10px', fontSize: '14px', fontWeight: 700, textDecoration: 'none', boxSizing: 'border-box' }}
-            >
-              <Ticket size={15} />
-              Get Tickets
-            </a>
-          )}
+          {/* 6. Affiliate CTAs */}
+          {(() => {
+            const isTicketType  = TICKET_TYPES.has(opp.opportunity_type)
+            const isRetreatType = RETREAT_TYPES.has(opp.opportunity_type)
+            const isSelfFunded  = (opp.self_fund_cost_usd ?? 0) > 0
+            const hasCity       = !!(opp.city || opp.country)
+
+            // Ticket button: explicit ticket_affiliate_url OR ticket-type with generated link
+            const ticketHref = opp.ticket_affiliate_url
+              ? trackedUrl(opp.ticket_affiliate_url, opp.id, 'ticket_direct')
+              : isTicketType
+                ? trackedUrl(generateTicketLink(opp.title), opp.id, 'ticketnetwork')
+                : null
+
+            // Accommodation button: retreat types or self-funded events with a location
+            const bookingHref = (isRetreatType || isSelfFunded) && hasCity
+              ? trackedUrl(generateBookingLink(opp.city ?? null, opp.country ?? null), opp.id, 'booking')
+              : null
+
+            return (
+              <>
+                {ticketHref && (
+                  <a
+                    href={ticketHref}
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', padding: '12px', backgroundColor: '#d4a017', color: '#fff', borderRadius: '10px', fontSize: '14px', fontWeight: 700, textDecoration: 'none', boxSizing: 'border-box' }}
+                  >
+                    <Ticket size={15} />
+                    {opp.ticket_affiliate_url ? 'Get Tickets' : 'Find Tickets'}
+                  </a>
+                )}
+
+                {bookingHref && (
+                  <a
+                    href={bookingHref}
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', padding: '12px', backgroundColor: '#0369a1', color: '#fff', borderRadius: '10px', fontSize: '14px', fontWeight: 700, textDecoration: 'none', boxSizing: 'border-box' }}
+                  >
+                    <MapPin size={15} />
+                    {isRetreatType ? 'Book Accommodation' : 'Find Nearby Hotels'}
+                  </a>
+                )}
+              </>
+            )
+          })()}
 
           {/* 7. Visa indicator */}
           {showVisa && !isRemote && (
