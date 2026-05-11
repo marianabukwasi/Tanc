@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { exec } from 'child_process'
 import { promisify } from 'util'
 import path from 'path'
+import { logError } from '@/lib/errors'
 
 const execAsync = promisify(exec)
 
@@ -37,8 +38,7 @@ export async function GET(request: Request) {
       counts[name] = saved
       console.log(`[cron/scrape-weekly] ${name}: ${saved} saved`)
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err)
-      console.error(`[cron/scrape-weekly] ${name} error:`, message)
+      logError(err, `[cron/scrape-weekly] ${name}`)
       counts[name] = 0
     }
   }

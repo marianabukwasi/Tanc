@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { exec } from 'child_process'
 import { promisify } from 'util'
 import path from 'path'
+import { logError } from '@/lib/errors'
 
 const execAsync = promisify(exec)
 
@@ -20,7 +21,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ scraped })
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
-    console.error('[cron/scrape-daily] Error:', message)
+    logError(err, '[cron/scrape-daily]')
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }

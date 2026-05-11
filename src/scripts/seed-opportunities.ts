@@ -1,6 +1,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import { createClient } from '@supabase/supabase-js'
+import { logError } from '../lib/errors'
 
 // ── Load .env.local manually ─────────────────────────────────────────────────
 function loadEnv() {
@@ -2624,7 +2625,7 @@ async function seed() {
     .select('id, title')
 
   if (error) {
-    console.error('Insert error:', error)
+    logError(error, 'seed-opportunities: insert')
     process.exit(1)
   }
 

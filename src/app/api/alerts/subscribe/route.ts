@@ -1,5 +1,6 @@
 import { Resend } from 'resend'
 import { createClient } from '@supabase/supabase-js'
+import { logError } from '@/lib/errors'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -36,7 +37,7 @@ export async function POST(request: Request) {
       )
 
     if (dbError) {
-      console.error('DB error:', dbError)
+      logError(dbError, 'alerts/subscribe: DB')
       return Response.json({ error: 'Could not save subscription' }, { status: 500 })
     }
 
@@ -77,7 +78,7 @@ export async function POST(request: Request) {
 
     return Response.json({ success: true })
   } catch (err) {
-    console.error('Subscribe error:', err)
+    logError(err, 'alerts/subscribe')
     return Response.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
