@@ -383,7 +383,14 @@ export default function AdminPage() {
     if (editingId) {
       await supabase.from('opportunities').update(row).eq('id', editingId)
     } else {
-      await supabase.from('opportunities').insert(row)
+      const { data: inserted } = await supabase.from('opportunities').insert(row).select('id').single()
+      if (inserted?.id) {
+        fetch('/api/notifications/trigger', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-admin-email': adminEmail },
+          body: JSON.stringify({ opportunityId: inserted.id }),
+        }).catch(() => {})
+      }
     }
     setSaving(false)
     setModalOpen(false)

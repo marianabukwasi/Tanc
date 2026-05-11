@@ -763,14 +763,117 @@ function PreferencesSection({ profile, editing, onEdit, onCancel, onSave, saving
           <FieldRow label="Excluded Countries" value={profile.excluded_countries?.join(', ')} />
           <FieldRow label="Max Self-Fund" value={profile.max_self_fund_usd ? `$${profile.max_self_fund_usd.toLocaleString()}` : null} />
           <FieldRow label="Preferred Format" value={profile.preferred_format} />
-          <div style={{ padding: '10px 0' }}>
-            <div style={{ fontSize: '11px', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '6px' }}>Notifications</div>
-            <div style={{ fontSize: '13px', color: '#475569' }}>
-              {[profile.notification_instant && 'Instant', profile.notification_digest && 'Digest', profile.notification_reminders && 'Reminders'].filter(Boolean).join(' · ') || 'All disabled'}
-            </div>
-          </div>
         </div>
       )}
+    </div>
+  )
+}
+
+// ─── Notifications Section ──────────────────────────────────────────────────
+
+interface NotifSectionProps {
+  profile: Profile
+  onUpdate: (patch: Partial<Profile>) => void
+}
+
+function NotificationsSection({ profile, onUpdate }: NotifSectionProps) {
+  const [instant, setInstant] = useState(profile.notification_instant)
+  const [digest, setDigest] = useState(profile.notification_digest)
+  const [reminders, setReminders] = useState(profile.notification_reminders)
+  const [saving, setSaving] = useState<string | null>(null)
+
+  useEffect(() => {
+    setInstant(profile.notification_instant)
+    setDigest(profile.notification_digest)
+    setReminders(profile.notification_reminders)
+  }, [profile])
+
+  async function toggle(
+    field: 'notification_instant' | 'notification_digest' | 'notification_reminders',
+    next: boolean,
+  ) {
+    setSaving(field)
+    const sb = createClient()
+    await sb.from('profiles').update({ [field]: next }).eq('id', profile.id)
+    onUpdate({ [field]: next })
+    setSaving(null)
+  }
+
+  const toggleStyle = (on: boolean, busy: boolean): React.CSSProperties => ({
+    width: '44px', height: '24px', borderRadius: '12px', border: 'none',
+    cursor: busy ? 'wait' : 'pointer', position: 'relative', flexShrink: 0,
+    transition: 'background-color 0.2s', backgroundColor: on ? '#d4a017' : '#e2e8f0',
+    opacity: busy ? 0.7 : 1,
+  })
+
+  const knobStyle = (on: boolean): React.CSSProperties => ({
+    position: 'absolute', top: '3px', left: on ? '23px' : '3px',
+    width: '18px', height: '18px', borderRadius: '50%',
+    backgroundColor: '#ffffff', transition: 'left 0.2s',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.15)',
+  })
+
+  const items: {
+    field: 'notification_instant' | 'notification_digest' | 'notification_reminders'
+    label: string
+    description: string
+    value: boolean
+    setter: (v: boolean) => void
+  }[] = [
+    {
+      field: 'notification_instant',
+      label: 'Instant match alerts',
+      description: 'Get notified immediately when a new opportunity matches your profile at 85% or higher.',
+      value: instant,
+      setter: setInstant,
+    },
+    {
+      field: 'notification_digest',
+      label: 'Weekly digest',
+      description: 'Receive a curated digest of new opportunities every Tuesday.',
+      value: digest,
+      setter: setDigest,
+    },
+    {
+      field: 'notification_reminders',
+      label: 'Deadline reminders',
+      description: 'Get reminded 30, 14, 7, and 2 days before tracked opportunity deadlines.',
+      value: reminders,
+      setter: setReminders,
+    },
+  ]
+
+  return (
+    <div style={sectionCard}>
+      <div style={{ ...sectionHeader, marginBottom: '4px' }}>
+        <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: '#0a1628' }}>Notification Preferences</h2>
+      </div>
+      {items.map(({ field, label, description, value, setter }) => {
+        const busy = saving === field
+        return (
+          <div
+            key={field}
+            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '14px 0', borderBottom: '1px solid #f1f5f9', gap: '16px' }}
+          >
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: '14px', fontWeight: 600, color: '#0a1628' }}>{label}</div>
+              <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px', lineHeight: 1.5 }}>{description}</div>
+            </div>
+            <button
+              type="button"
+              disabled={!!saving}
+              onClick={() => {
+                const next = !value
+                setter(next)
+                toggle(field, next)
+              }}
+              style={toggleStyle(value, busy)}
+            >
+              <span style={knobStyle(value)} />
+            </button>
+          </div>
+        )
+      })}
     </div>
   )
 }
@@ -832,6 +935,10 @@ export default function ProfilePage() {
   const completion = profile.profile_complete_pct ?? 0
   const displayName = [profile.first_name, profile.last_name].filter(Boolean).join(' ')
 
+  function handleNotificationUpdate(patch: Partial<Profile>) {
+    setProfile(prev => prev ? { ...prev, ...patch } : prev)
+  }
+
   const sectionProps = (id: string) => ({
     profile,
     editing: editingSection === id,
@@ -880,6 +987,7 @@ export default function ProfilePage() {
         <ProfessionalSection {...sectionProps('professional')} />
         <DocumentsSection {...sectionProps('documents')} />
         <PreferencesSection {...sectionProps('preferences')} />
+        <NotificationsSection profile={profile} onUpdate={handleNotificationUpdate} />
 
       </div>
     </div>
