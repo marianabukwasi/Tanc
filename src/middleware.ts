@@ -54,7 +54,6 @@ export const config = {
     '/dashboard/:path*',
     '/profile/:path*',
     '/tracker/:path*',
-    '/opportunities/:path*',
     '/admin/:path*',
   ],
 }
