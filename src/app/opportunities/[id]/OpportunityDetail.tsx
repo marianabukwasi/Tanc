@@ -14,6 +14,7 @@ import type { Gap } from '@/lib/matchEngine'
 import type { MatchInfo } from '@/lib/matching'
 import AdBanner from '@/components/AdBanner'
 import GapAnalysis from '@/components/GapAnalysis'
+import VisaIndicator from '@/components/VisaIndicator'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -821,20 +822,11 @@ export default function OpportunityDetail({ id }: { id: string }) {
 
           {/* 7. Visa indicator */}
           {showVisa && !isRemote && (
-            <div style={{ border: '1px solid #e2e8f0', borderRadius: '14px', padding: '14px', backgroundColor: '#fff' }}>
-              <div style={{ fontSize: '12px', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '8px' }}>Visa info</div>
-              <div style={{ fontSize: '13px', color: '#334155', marginBottom: '8px' }}>
-                {`Check visa requirements for ${profile!.nationalities![0]} citizens travelling to ${opp.country}.`}
-              </div>
-              <a
-                href={`https://www.visaguide.world/`}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ fontSize: '12px', color: '#d4a017', fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
-              >
-                Check visa requirements <ExternalLink size={12} />
-              </a>
-            </div>
+            <VisaIndicator
+              userNationality={profile!.nationalities![0]}
+              oppCountry={opp.country!}
+              oppFormat={opp.format}
+            />
           )}
 
           {/* Share */}

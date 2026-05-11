@@ -61,6 +61,7 @@ interface Profile {
   notification_reminders: boolean
   profile_complete_pct: number
   role: string
+  referral_code: string | null
 }
 
 // ─── Style constants ────────────────────────────────────────────────────────
@@ -887,6 +888,8 @@ export default function ProfilePage() {
   const [editingSection, setEditingSection] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState('')
+  const [referredCount, setReferredCount] = useState(0)
+  const [referralCopied, setReferralCopied] = useState(false)
 
   useEffect(() => {
     const supabase = createClient()
@@ -900,6 +903,13 @@ export default function ProfilePage() {
           certifications: (Array.isArray(p.certifications) ? p.certifications : []) as Certification[],
         }
         setProfile(normalized as Profile)
+
+        // Fetch referral count
+        const { count } = await supabase
+          .from('profiles')
+          .select('id', { count: 'exact', head: true })
+          .eq('referred_by', data.user.id)
+        setReferredCount(count ?? 0)
       }
       setLoading(false)
     })
@@ -988,6 +998,62 @@ export default function ProfilePage() {
         <DocumentsSection {...sectionProps('documents')} />
         <PreferencesSection {...sectionProps('preferences')} />
         <NotificationsSection profile={profile} onUpdate={handleNotificationUpdate} />
+
+        {/* Share & Earn */}
+        {profile.referral_code && (() => {
+          const referralLink = `https://tancglobal.com/r/${profile.referral_code}`
+          function copyLink() {
+            navigator.clipboard.writeText(referralLink).then(() => {
+              setReferralCopied(true)
+              setTimeout(() => setReferralCopied(false), 2000)
+            })
+          }
+          return (
+            <div style={sectionCard}>
+              <div style={{ ...sectionHeader, marginBottom: '16px' }}>
+                <div>
+                  <h2 style={{ margin: '0 0 4px', fontSize: '16px', fontWeight: 700, color: '#0a1628' }}>Share & Earn</h2>
+                  <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>Invite friends to join TANC and track how many you've brought on board.</p>
+                </div>
+              </div>
+
+              {/* Stats */}
+              <div style={{ display: 'flex', gap: '16px', marginBottom: '20px' }}>
+                <div style={{ flex: 1, padding: '14px 16px', backgroundColor: '#f8fafc', borderRadius: '10px', border: '1px solid #e2e8f0', textAlign: 'center' }}>
+                  <div style={{ fontSize: '28px', fontWeight: 800, color: '#d4a017' }}>{referredCount}</div>
+                  <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>Friends signed up</div>
+                </div>
+                <div style={{ flex: 1, padding: '14px 16px', backgroundColor: '#f0fdf4', borderRadius: '10px', border: '1px solid #bbf7d0', textAlign: 'center' }}>
+                  <div style={{ fontSize: '28px', fontWeight: 800, color: '#15803d' }}>∞</div>
+                  <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>No limits</div>
+                </div>
+              </div>
+
+              {/* Referral link */}
+              <div style={{ marginBottom: '8px', fontSize: '12px', fontWeight: 600, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Your referral link</div>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <div style={{ flex: 1, padding: '10px 14px', backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: '13px', color: '#334155', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontFamily: 'monospace' }}>
+                  {referralLink}
+                </div>
+                <button
+                  onClick={copyLink}
+                  style={{
+                    flexShrink: 0, padding: '10px 16px', borderRadius: '8px', fontSize: '13px', fontWeight: 600,
+                    border: '1px solid #e2e8f0', cursor: 'pointer', fontFamily: 'inherit',
+                    backgroundColor: referralCopied ? '#f0fdf4' : '#fff',
+                    color: referralCopied ? '#15803d' : '#d4a017',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  {referralCopied ? '✓ Copied!' : 'Copy link'}
+                </button>
+              </div>
+              <p style={{ fontSize: '12px', color: '#94a3b8', marginTop: '10px', lineHeight: 1.5 }}>
+                Share this link with friends. When they sign up, you both benefit from growing the TANC community.
+              </p>
+            </div>
+          )
+        })()}
 
       </div>
     </div>

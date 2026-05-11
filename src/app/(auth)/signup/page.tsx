@@ -33,8 +33,18 @@ export default function SignupPage() {
     setError('')
     try {
       const supabase = createClient()
-      const { error: authError } = await supabase.auth.signUp({ email, password })
+      const { data, error: authError } = await supabase.auth.signUp({ email, password })
       if (authError) throw authError
+
+      // Apply referral — cookie is httpOnly so the API reads it server-side
+      if (data.user) {
+        await fetch('/api/referral/apply', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: data.user.id }),
+        })
+      }
+
       setSuccess(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong.')
