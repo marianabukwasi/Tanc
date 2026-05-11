@@ -6,13 +6,17 @@ import path from 'path'
 const execAsync = promisify(exec)
 
 const SCRAPERS = [
-  { name: 'opportunity-desk', file: 'scraper-opportunity-desk.js' },
-  { name: 'profellow',        file: 'scraper-profellow.js'        },
-  { name: 'globalsouth',      file: 'scraper-globalsouth.js'      },
-  { name: 'bookretreats',     file: 'scraper-bookretreats.js'     },
-  { name: 'retreatguru',      file: 'scraper-retreatguru.js'      },
-  { name: 'sports',           file: 'scraper-sports.js'           },
-  { name: 'eventbrite',       file: 'scraper-eventbrite.js'       },
+  { name: 'opportunity-desk',  file: 'scraper-opportunity-desk.js'  },
+  { name: 'profellow',         file: 'scraper-profellow.js'         },
+  { name: 'globalsouth',       file: 'scraper-globalsouth.js'       },
+  { name: 'bookretreats',      file: 'scraper-bookretreats.js'      },
+  { name: 'retreatguru',       file: 'scraper-retreatguru.js'       },
+  { name: 'sports',            file: 'scraper-sports.js'            },
+  { name: 'eventbrite',        file: 'scraper-eventbrite.js'        },
+  { name: 'scholars4dev',      file: 'scraper-scholars4dev.js'      },
+  { name: 'afterschoolafrica', file: 'scraper-afterschoolafrica.js' },
+  { name: 'volunteerworld',    file: 'scraper-volunteerworld.js'    },
+  { name: 'unvolunteers',      file: 'scraper-unvolunteers.js'      },
 ]
 
 export async function GET(request: Request) {
