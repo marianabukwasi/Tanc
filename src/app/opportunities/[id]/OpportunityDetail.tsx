@@ -10,8 +10,10 @@ import {
 import type { User } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 import { calculateMatchResult } from '@/lib/matchEngine'
+import type { Gap } from '@/lib/matchEngine'
 import type { MatchInfo } from '@/lib/matching'
 import AdBanner from '@/components/AdBanner'
+import GapAnalysis from '@/components/GapAnalysis'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -281,6 +283,7 @@ export default function OpportunityDetail({ id }: { id: string }) {
   const [user, setUser] = useState<User | null | undefined>(undefined)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [matchInfo, setMatchInfo] = useState<MatchInfo>({ state: 'loading' })
+  const [matchGaps, setMatchGaps] = useState<Gap[]>([])
   const [saved, setSaved] = useState(false)
   const [copied, setCopied] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -383,6 +386,7 @@ export default function OpportunityDetail({ id }: { id: string }) {
     )
 
     setMatchInfo({ state: 'score', value: result.score, isEstimate: result.gaps.length > 0 && result.score > 60 })
+    setMatchGaps(result.gaps)
 
     // Cache score on detail view
     if (user) {
@@ -739,7 +743,10 @@ export default function OpportunityDetail({ id }: { id: string }) {
             </div>
           )}
 
-          {/* 3. Deadline card */}
+          {/* 3. Gap analysis */}
+          {matchGaps.length > 0 && <GapAnalysis gaps={matchGaps} />}
+
+          {/* 4. Deadline card */}
           <div style={{ border: `1px solid ${days !== null && days <= 7 && days >= 0 ? '#fecaca' : '#e2e8f0'}`, borderRadius: '14px', padding: '18px', backgroundColor: days !== null && days <= 7 && days >= 0 ? '#fff5f5' : '#fff' }}>
             <div style={{ fontSize: '12px', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '8px' }}>
               <Clock size={12} style={{ display: 'inline', marginRight: '4px' }} />Deadline

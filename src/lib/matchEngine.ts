@@ -41,11 +41,20 @@ export interface EngineOpportunity {
   min_recommendations: number | null
 }
 
+export interface Pathway {
+  label: string
+  description?: string
+  affiliateUrl?: string
+  estimatedTime?: string
+  estimatedCost?: string
+}
+
 export interface Gap {
   field: string
   required: string
   userHas: string
   isHardFail: boolean
+  pathways: Pathway[]
 }
 
 export interface MatchResult {
@@ -54,6 +63,62 @@ export interface MatchResult {
   met: string[]
   gaps: Gap[]
 }
+
+// ─── Pathway constants ────────────────────────────────────────────────────────
+
+function envUrl(key: string): string | undefined {
+  return (process.env as Record<string, string | undefined>)[key]
+}
+
+const LANGUAGE_PATHWAYS: Pathway[] = [
+  {
+    label: 'British Council Online Course',
+    description: 'Structured English course from A1 to C1',
+    affiliateUrl: 'https://www.britishcouncil.org/english/online-courses',
+    estimatedTime: '3–6 months',
+    estimatedCost: '$50–200',
+  },
+  {
+    label: 'Babbel',
+    description: 'Mobile-first language learning for 14 languages',
+    affiliateUrl: envUrl('BABBEL_AFFILIATE_URL'),
+    estimatedTime: '6–12 months',
+    estimatedCost: '$7/month',
+  },
+  {
+    label: 'Duolingo',
+    description: 'Free language learning — good for building a foundation',
+    affiliateUrl: 'https://duolingo.com',
+    estimatedTime: '12+ months',
+    estimatedCost: 'Free or $7/month',
+  },
+]
+
+const CERTIFICATION_PATHWAYS: Pathway[] = [
+  {
+    label: 'Coursera Professional Certificate',
+    description: 'Industry-recognised certificates across hundreds of fields',
+    affiliateUrl: envUrl('COURSERA_AFFILIATE_URL'),
+    estimatedTime: '2–6 months',
+    estimatedCost: '$40–200',
+  },
+  {
+    label: 'edX MicroCredential',
+    description: 'University-backed micro-credentials and professional certificates',
+    affiliateUrl: envUrl('EDX_AFFILIATE_URL'),
+    estimatedTime: '2–4 months',
+    estimatedCost: '$150–400',
+  },
+]
+
+const RECOMMENDATION_PATHWAYS: Pathway[] = [
+  {
+    label: 'Download request email template',
+    description: 'Professional template for requesting letters from professors or supervisors',
+    estimatedTime: '2–4 weeks',
+    estimatedCost: 'Free',
+  },
+]
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -119,14 +184,14 @@ export function calculateMatchResult(
   if (opp.min_age || opp.max_age) {
     const age = ageFromDob(profile.date_of_birth)
     if (age === null) {
-      gaps.push({ field: 'Age', required: `${opp.min_age ?? '—'}–${opp.max_age ?? '—'}`, userHas: 'Not set', isHardFail: false })
+      gaps.push({ field: 'Age', required: `${opp.min_age ?? '—'}–${opp.max_age ?? '—'}`, userHas: 'Not set', isHardFail: false, pathways: [] })
     } else {
       const tooYoung = opp.min_age !== null && age < opp.min_age
       const tooOld   = opp.max_age !== null && age > opp.max_age
       if (tooYoung) {
-        gaps.push({ field: 'Age', required: `Min ${opp.min_age}`, userHas: `${age}`, isHardFail: true })
+        gaps.push({ field: 'Age', required: `Min ${opp.min_age}`, userHas: `${age}`, isHardFail: true, pathways: [] })
       } else if (tooOld) {
-        gaps.push({ field: 'Age', required: `Max ${opp.max_age}`, userHas: `${age}`, isHardFail: true })
+        gaps.push({ field: 'Age', required: `Max ${opp.max_age}`, userHas: `${age}`, isHardFail: true, pathways: [] })
       } else {
         met.push(`Age ${age} is within ${opp.min_age ?? '—'}–${opp.max_age ?? '—'} range`)
       }
@@ -149,6 +214,7 @@ export function calculateMatchResult(
         required: reqNats.join(', '),
         userHas: userNats.join(', ') || 'Not set',
         isHardFail: true,
+        pathways: [],
       })
     }
   } else {
@@ -163,6 +229,7 @@ export function calculateMatchResult(
         required: `Not from: ${exclNats.join(', ')}`,
         userHas: userNats[0] ?? '',
         isHardFail: true,
+        pathways: [],
       })
     }
   }
@@ -174,13 +241,14 @@ export function calculateMatchResult(
     if (reqIdx === -1) {
       met.push('Education level not restricted')
     } else if (userIdx === -1) {
-      gaps.push({ field: 'Education', required: opp.min_education_level, userHas: 'Not set', isHardFail: false })
+      gaps.push({ field: 'Education', required: opp.min_education_level, userHas: 'Not set', isHardFail: false, pathways: CERTIFICATION_PATHWAYS })
     } else if (userIdx < reqIdx) {
       gaps.push({
         field: 'Education',
         required: opp.min_education_level,
         userHas: profile.education_level ?? 'Not set',
         isHardFail: false,
+        pathways: CERTIFICATION_PATHWAYS,
       })
     } else {
       met.push(`Education (${profile.education_level}) meets ${opp.min_education_level} requirement`)
@@ -204,6 +272,7 @@ export function calculateMatchResult(
         required: reqFields.join(', '),
         userHas: profile.field_of_study ?? 'Not set',
         isHardFail: false,
+        pathways: CERTIFICATION_PATHWAYS,
       })
     }
   }
@@ -215,7 +284,7 @@ export function calculateMatchResult(
       ? normalizeGpa(profile.gpa_value, profile.gpa_scale ?? 4)
       : null
     if (userNorm === null) {
-      gaps.push({ field: 'GPA', required: `${opp.min_gpa}/${opp.gpa_scale ?? 4}`, userHas: 'Not set', isHardFail: false })
+      gaps.push({ field: 'GPA', required: `${opp.min_gpa}/${opp.gpa_scale ?? 4}`, userHas: 'Not set', isHardFail: false, pathways: [] })
     } else if (userNorm < reqNorm) {
       const diff = (reqNorm - userNorm).toFixed(2)
       gaps.push({
@@ -223,6 +292,7 @@ export function calculateMatchResult(
         required: `${opp.min_gpa}/${opp.gpa_scale ?? 4}`,
         userHas: `${profile.gpa_value}/${profile.gpa_scale ?? 4} (${diff} below required)`,
         isHardFail: false,
+        pathways: [],
       })
     } else {
       met.push(`GPA ${profile.gpa_value}/${profile.gpa_scale ?? 4} meets requirement`)
@@ -245,6 +315,7 @@ export function calculateMatchResult(
           required: reqLevel ? `${requiredLangName(rl)} ${reqLevel}` : requiredLangName(rl),
           userHas: 'Not in profile',
           isHardFail: false,
+          pathways: LANGUAGE_PATHWAYS,
         })
       } else if (reqLevel) {
         const userLevel = profileLangLevel(found)
@@ -257,6 +328,7 @@ export function calculateMatchResult(
             required: `${requiredLangName(rl)} ${reqLevel}`,
             userHas: `${requiredLangName(rl)} ${userLevel ?? '?'} (${bandsDiff} band${bandsDiff > 1 ? 's' : ''} below)`,
             isHardFail: false,
+            pathways: LANGUAGE_PATHWAYS,
           })
         } else {
           met.push(`${requiredLangName(rl)} level meets requirement`)
@@ -279,6 +351,7 @@ export function calculateMatchResult(
         required: `${minExp} year${minExp !== 1 ? 's' : ''}`,
         userHas: `${userExp} year${userExp !== 1 ? 's' : ''}`,
         isHardFail: false,
+        pathways: [],
       })
     }
   }
@@ -288,7 +361,7 @@ export function calculateMatchResult(
     if (profile.has_passport) {
       met.push('Valid passport in profile')
     } else {
-      gaps.push({ field: 'Passport', required: 'Valid passport', userHas: 'Not listed', isHardFail: false })
+      gaps.push({ field: 'Passport', required: 'Valid passport', userHas: 'Not listed', isHardFail: false, pathways: [] })
     }
   }
 
@@ -296,7 +369,7 @@ export function calculateMatchResult(
     if (profile.has_transcripts) {
       met.push('Transcripts available')
     } else {
-      gaps.push({ field: 'Transcripts', required: 'Academic transcripts', userHas: 'Not listed', isHardFail: false })
+      gaps.push({ field: 'Transcripts', required: 'Academic transcripts', userHas: 'Not listed', isHardFail: false, pathways: [] })
     }
   }
 
@@ -311,6 +384,7 @@ export function calculateMatchResult(
         required: `${minRec}`,
         userHas: `${userRec}`,
         isHardFail: false,
+        pathways: RECOMMENDATION_PATHWAYS,
       })
     }
   }
