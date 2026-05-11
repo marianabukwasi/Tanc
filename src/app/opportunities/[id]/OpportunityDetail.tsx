@@ -339,7 +339,7 @@ export default function OpportunityDetail({ id }: { id: string }) {
   // Saved state
   useEffect(() => {
     if (!user || !id) return
-    supabase.from('saved_opportunities').select('id').eq('user_id', user.id).eq('opportunity_id', id).maybeSingle()
+    supabase.from('user_opportunities').select('id').eq('user_id', user.id).eq('opportunity_id', id).maybeSingle()
       .then(({ data }) => setSaved(!!data))
   }, [user, id])
 
@@ -396,10 +396,14 @@ export default function OpportunityDetail({ id }: { id: string }) {
   async function toggleSave() {
     if (!user) { router.push('/signin'); return }
     if (saved) {
-      await supabase.from('saved_opportunities').delete().eq('user_id', user.id).eq('opportunity_id', id)
+      await supabase.from('user_opportunities').delete().eq('user_id', user.id).eq('opportunity_id', id)
       setSaved(false)
     } else {
-      await supabase.from('saved_opportunities').insert({ user_id: user.id, opportunity_id: id })
+      const score = matchInfo.state === 'score' ? matchInfo.value : null
+      await supabase.from('user_opportunities').upsert(
+        { user_id: user.id, opportunity_id: id, status: 'Saved', match_score: score },
+        { onConflict: 'user_id,opportunity_id' }
+      )
       setSaved(true)
     }
   }
