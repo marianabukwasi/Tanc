@@ -207,6 +207,8 @@ export default function OpportunityDetailPage() {
         .from('opportunities')
         .select('*')
         .eq('id', id)
+        .eq('is_published', true)
+        .eq('is_archived', false)
         .single()
 
       if (!data) { router.push('/browse'); return }
@@ -222,6 +224,8 @@ export default function OpportunityDetailPage() {
       const { data: sim } = await supabase
         .from('opportunities')
         .select('*')
+        .eq('is_published', true)
+        .eq('is_archived', false)
         .neq('id', id)
         .or(`type.eq.${data.type},country.eq.${data.country}`)
         .limit(3)

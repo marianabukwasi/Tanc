@@ -409,7 +409,7 @@ function BrowsePageContent() {
       setLoading(true)
       try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        let query: any = supabase.from('opportunities').select('*').limit(10000)
+        let query: any = supabase.from('opportunities').select('*').eq('is_published', true).eq('is_archived', false).limit(10000)
         if (search.trim()) {
           query = query.or(`title.ilike.%${search.trim()}%,organization.ilike.%${search.trim()}%,country.ilike.%${search.trim()}%`)
         }

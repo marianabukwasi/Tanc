@@ -102,6 +102,8 @@ export default function ApplyPage() {
       .from('opportunities')
       .select('id, title, organization, country, type, website, documents, field')
       .eq('id', id)
+      .eq('is_published', true)
+      .eq('is_archived', false)
       .single()
       .then(({ data }) => {
         if (!data) { router.push('/browse'); return }
