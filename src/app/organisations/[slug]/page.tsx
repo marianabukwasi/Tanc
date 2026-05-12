@@ -195,7 +195,7 @@ export default function OrganisationPage() {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
               <div style={{ width: '48px', height: '48px', borderRadius: '12px', backgroundColor: '#0a1628', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <span style={{ color: '#d4a017', fontWeight: 800, fontSize: '20px' }}>{orgName.charAt(0).toUpperCase()}</span>
+                <span style={{ color: '#1B2A6B', fontWeight: 800, fontSize: '20px' }}>{orgName.charAt(0).toUpperCase()}</span>
               </div>
               <div>
                 <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#0a1628', margin: 0, lineHeight: 1.2 }}>{orgName}</h1>
@@ -204,7 +204,7 @@ export default function OrganisationPage() {
                   {orgWebsite && (
                     <>
                       <span style={{ color: '#e2e8f0' }}>·</span>
-                      <a href={orgWebsite} target="_blank" rel="noreferrer" style={{ fontSize: '13px', color: '#d4a017', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <a href={orgWebsite} target="_blank" rel="noreferrer" style={{ fontSize: '13px', color: '#1B2A6B', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>
                         Website <ExternalLink size={11} />
                       </a>
                     </>
@@ -221,9 +221,9 @@ export default function OrganisationPage() {
               disabled={followBusy}
               style={{
                 display: 'flex', alignItems: 'center', gap: '8px',
-                padding: '10px 20px', border: following ? '1px solid #d4a017' : '1px solid #e2e8f0',
+                padding: '10px 20px', border: following ? '1px solid #1B2A6B' : '1px solid #e2e8f0',
                 borderRadius: '10px', backgroundColor: following ? '#fef9ee' : '#ffffff',
-                color: following ? '#d4a017' : '#475569', fontSize: '14px', fontWeight: 600,
+                color: following ? '#1B2A6B' : '#475569', fontSize: '14px', fontWeight: 600,
                 cursor: followBusy ? 'not-allowed' : 'pointer', transition: 'all 0.15s',
               }}
             >
@@ -281,7 +281,7 @@ export default function OrganisationPage() {
             {stories.map(s => (
               <div key={s.id} style={{ backgroundColor: '#fefce8', border: '1px solid #fde68a', borderRadius: '12px', padding: '16px 18px' }}>
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#d4a017', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#1B2A6B', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <span style={{ color: '#ffffff', fontWeight: 700, fontSize: '14px' }}>
                       {(s.user_name ?? '?').charAt(0).toUpperCase()}
                     </span>

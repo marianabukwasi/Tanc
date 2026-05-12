@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 :root {
-  --gold: #d4a017;
-  --gold-light: #fef9e7;
+  --primary: #1B2A6B;
+  --primary-light: #eef0fa;
   --navy: #0a1628;
   --text-secondary: #475569;
   --border: #e2e8f0;

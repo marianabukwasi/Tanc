@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -176,10 +176,10 @@ export default function ProfileSetupPage() {
         <div style={{ marginBottom: '36px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
             <span style={{ fontSize: '13px', fontWeight: 600, color: '#0a1628' }}>Profile completion</span>
-            <span style={{ fontSize: '13px', fontWeight: 700, color: '#d4a017' }}>{completion}%</span>
+            <span style={{ fontSize: '13px', fontWeight: 700, color: '#1B2A6B' }}>{completion}%</span>
           </div>
           <div style={{ width: '100%', height: '8px', backgroundColor: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
-            <div style={{ width: `${completion}%`, height: '100%', backgroundColor: '#d4a017', borderRadius: '4px', transition: 'width 0.4s ease' }} />
+            <div style={{ width: `${completion}%`, height: '100%', backgroundColor: '#1B2A6B', borderRadius: '4px', transition: 'width 0.4s ease' }} />
           </div>
         </div>
 
@@ -252,9 +252,9 @@ export default function ProfileSetupPage() {
                     style={{
                       padding: '7px 16px',
                       borderRadius: '50px',
-                      border: `1.5px solid ${selected ? '#d4a017' : '#e2e8f0'}`,
-                      backgroundColor: selected ? '#fef9e7' : '#ffffff',
-                      color: selected ? '#d4a017' : '#475569',
+                      border: `1.5px solid ${selected ? '#1B2A6B' : '#e2e8f0'}`,
+                      backgroundColor: selected ? '#eef0fa' : '#ffffff',
+                      color: selected ? '#1B2A6B' : '#475569',
                       fontSize: '13px',
                       fontWeight: selected ? 600 : 400,
                       cursor: 'pointer',
@@ -287,7 +287,7 @@ export default function ProfileSetupPage() {
             style={{
               width: '100%',
               height: '52px',
-              backgroundColor: saving ? '#e2c76a' : '#d4a017',
+              backgroundColor: saving ? '#8B9DC3' : '#1B2A6B',
               color: '#ffffff',
               border: 'none',
               borderRadius: '8px',

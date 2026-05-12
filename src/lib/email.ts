@@ -1,4 +1,4 @@
-import { Resend } from 'resend'
+﻿import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = 'TANC <notifications@tancglobal.com>'
@@ -45,7 +45,7 @@ function emailShell(body: string, footerExtra = ''): string {
 <tr>
   <td style="background:#f8fafc;border-top:1px solid #e2e8f0;padding:20px 32px">
     <p style="font-size:12px;color:#94a3b8;margin:0 0 8px">You are receiving this because you enabled notifications on TANC.</p>
-    <a href="${BASE}/profile" style="font-size:12px;color:#d4a017;text-decoration:none">Manage notification preferences</a>${footerExtra ? ` &middot; ${footerExtra}` : ''}
+    <a href="${BASE}/profile" style="font-size:12px;color:#1B2A6B;text-decoration:none">Manage notification preferences</a>${footerExtra ? ` &middot; ${footerExtra}` : ''}
   </td>
 </tr>
 
@@ -75,7 +75,7 @@ function oppCard(opp: EmailOpp): string {
     <div style="font-size:15px;font-weight:700;color:#0a1628;margin-bottom:4px">${opp.title}</div>
     <div style="font-size:13px;color:#64748b;margin-bottom:10px">${[opp.organization_name, opp.opportunity_type].filter(Boolean).join(' &middot; ')}</div>
     <table cellpadding="0" cellspacing="0"><tr>
-      ${opp.matchScore !== undefined ? `<td style="padding-right:14px"><span style="font-size:12px;font-weight:700;color:#ffffff;background:#d4a017;border-radius:20px;padding:3px 10px">${opp.matchScore}% match</span></td>` : ''}
+      ${opp.matchScore !== undefined ? `<td style="padding-right:14px"><span style="font-size:12px;font-weight:700;color:#ffffff;background:#1B2A6B;border-radius:20px;padding:3px 10px">${opp.matchScore}% match</span></td>` : ''}
       ${opp.application_deadline ? `<td style="font-size:12px;color:#64748b">Deadline: ${fmtDate(opp.application_deadline)} &mdash; ${deadlineBadge(opp.application_deadline)}</td>` : ''}
     </tr></table>
     <div style="margin-top:12px">
@@ -219,7 +219,7 @@ export async function sendWelcomeEmail(
   Complete your profile to unlock personalised match scores and instant alerts when new opportunities land.
 </p>
 <a href="${BASE}/profile/setup"
-   style="display:inline-block;background:#d4a017;color:#ffffff;text-decoration:none;padding:12px 28px;border-radius:8px;font-size:15px;font-weight:700">
+   style="display:inline-block;background:#1B2A6B;color:#ffffff;text-decoration:none;padding:12px 28px;border-radius:8px;font-size:15px;font-weight:700">
   Complete your profile &rarr;
 </a>
 ${matchCards}

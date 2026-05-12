@@ -13,7 +13,7 @@ interface Message {
 const OPENING: Message = {
   role: 'assistant',
   content:
-    "Hi! I'm the TANC Assistant. Tell me what kind of opportunity you're looking for — I'll search our database and find the best matches based on your background and goals.",
+    "Hi! I'm Marie, your TANC opportunity guide. Tell me what kind of opportunity you're looking for — I'll search our database and find the best matches based on your background and goals.",
 }
 
 export default function ChatAssistant() {
@@ -27,14 +27,12 @@ export default function ChatAssistant() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef       = useRef<HTMLInputElement>(null)
 
-  // Auth
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       setUserId(data.user?.id ?? null)
     })
   }, [])
 
-  // Responsive: detect mobile
   useEffect(() => {
     function check() { setIsMobile(window.innerWidth < 640) }
     check()
@@ -42,7 +40,6 @@ export default function ChatAssistant() {
     return () => window.removeEventListener('resize', check)
   }, [])
 
-  // Lock body scroll on mobile while open
   useEffect(() => {
     if (isMobile && isOpen) {
       document.body.style.overflow = 'hidden'
@@ -52,16 +49,13 @@ export default function ChatAssistant() {
     return () => { document.body.style.overflow = '' }
   }, [isMobile, isOpen])
 
-  // Extract opportunity ID if user is on a detail page
-  const oppIdMatch   = pathname.match(/\/opportunities\/([^/?#]+)/)
+  const oppIdMatch    = pathname.match(/\/opportunities\/([^/?#]+)/)
   const opportunityId = oppIdMatch?.[1] ?? null
 
-  // Auto-scroll
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  // Focus input when panel opens
   useEffect(() => {
     if (isOpen) setTimeout(() => inputRef.current?.focus(), 320)
   }, [isOpen])
@@ -76,7 +70,6 @@ export default function ChatAssistant() {
     setInput('')
     setLoading(true)
 
-    // Optimistic empty assistant bubble
     setMessages(prev => [...prev, { role: 'assistant', content: '' }])
 
     try {
@@ -144,8 +137,6 @@ export default function ChatAssistant() {
     }
   }
 
-  // ── Panel styles ─────────────────────────────────────────────────────────────
-
   const panelStyle: React.CSSProperties = isMobile
     ? {
         position:        'fixed',
@@ -183,7 +174,6 @@ export default function ChatAssistant() {
 
   return (
     <>
-      {/* ── Chat panel ────────────────────────────────────────────────────── */}
       <div style={panelStyle}>
 
         {/* Header */}
@@ -195,7 +185,7 @@ export default function ChatAssistant() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{
               width: '32px', height: '32px', borderRadius: '50%',
-              backgroundColor: '#d4a017',
+              backgroundColor: '#1B2A6B',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               flexShrink: 0,
             }}>
@@ -203,7 +193,7 @@ export default function ChatAssistant() {
             </div>
             <div>
               <div style={{ fontWeight: 700, fontSize: '14px', color: '#0a1628', lineHeight: 1.2 }}>
-                TANC Assistant
+                Marie
               </div>
               <div style={{ fontSize: '11px', color: '#15803d' }}>&#9679; Online</div>
             </div>
@@ -231,12 +221,11 @@ export default function ChatAssistant() {
                 maxWidth:        '85%',
                 padding:         '10px 13px',
                 borderRadius:    msg.role === 'user' ? '12px 12px 2px 12px' : '12px 12px 12px 2px',
-                backgroundColor: msg.role === 'user' ? '#d4a017' : '#ffffff',
+                backgroundColor: msg.role === 'user' ? '#1B2A6B' : '#ffffff',
                 color:           msg.role === 'user' ? '#ffffff' : '#0a1628',
                 fontSize:        '13.5px',
                 lineHeight:      1.55,
                 border:          msg.role === 'assistant' ? '1px solid #e2e8f0' : 'none',
-                borderLeft:      msg.role === 'assistant' ? '3px solid #d4a017' : 'none',
                 whiteSpace:      'pre-wrap',
                 wordBreak:       'break-word',
               }}>
@@ -264,7 +253,7 @@ export default function ChatAssistant() {
             onChange={e => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             disabled={loading}
-            placeholder="Ask me anything…"
+            placeholder="Ask Marie anything…"
             style={{
               flex: 1, height: '44px', border: '1px solid #e2e8f0',
               borderRadius: '8px', padding: '0 12px', fontSize: '14px',
@@ -278,7 +267,7 @@ export default function ChatAssistant() {
             aria-label="Send message"
             style={{
               width: '44px', height: '44px', borderRadius: '8px',
-              backgroundColor: loading || !input.trim() ? '#e2c76a' : '#d4a017',
+              backgroundColor: loading || !input.trim() ? '#8B9DC3' : '#1B2A6B',
               border: 'none',
               cursor: loading || !input.trim() ? 'not-allowed' : 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -290,7 +279,7 @@ export default function ChatAssistant() {
         </div>
       </div>
 
-      {/* ── Floating button ───────────────────────────────────────────────── */}
+      {/* Floating button */}
       <div style={{
         position: 'fixed', bottom: '20px', right: '20px',
         display: 'flex', flexDirection: 'column', alignItems: 'center',
@@ -298,22 +287,22 @@ export default function ChatAssistant() {
       }}>
         {!isOpen && (
           <div style={{
-            backgroundColor: '#0a1628', color: '#ffffff',
+            backgroundColor: '#1B2A6B', color: '#ffffff',
             fontSize: '11px', fontWeight: 600,
             padding: '5px 12px', borderRadius: '50px',
             whiteSpace: 'nowrap', boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
           }}>
-            Find my opportunity
+            Ask Marie
           </div>
         )}
         <button
           onClick={() => setIsOpen(o => !o)}
-          aria-label="Open TANC AI chat"
+          aria-label="Open Marie AI chat"
           style={{
             width: '56px', height: '56px', borderRadius: '50%',
-            backgroundColor: '#d4a017', border: 'none', cursor: 'pointer',
+            backgroundColor: '#1B2A6B', border: 'none', cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: '0 4px 20px rgba(212,160,23,0.3)',
+            boxShadow: '0 4px 20px rgba(27,42,107,0.3)',
             transition: 'transform 0.15s',
           }}
         >

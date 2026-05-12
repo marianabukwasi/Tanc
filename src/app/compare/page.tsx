@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
@@ -138,7 +138,7 @@ function CompareContent() {
         <div style={{ fontSize: '40px', marginBottom: '16px' }}>📊</div>
         <div style={{ fontSize: '18px', fontWeight: 700, color: '#0a1628', marginBottom: '8px' }}>No opportunities to compare</div>
         <div style={{ fontSize: '14px', color: '#64748b', marginBottom: '24px' }}>Select up to 3 opportunities from the browse page.</div>
-        <Link href="/opportunities" style={{ display: 'inline-block', padding: '11px 24px', backgroundColor: '#0a1628', color: '#d4a017', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textDecoration: 'none' }}>
+        <Link href="/opportunities" style={{ display: 'inline-block', padding: '11px 24px', backgroundColor: '#0a1628', color: '#1B2A6B', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textDecoration: 'none' }}>
           Browse Opportunities
         </Link>
       </div>
@@ -159,9 +159,9 @@ function CompareContent() {
             style={{
               padding: '8px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
               whiteSpace: 'nowrap', cursor: 'pointer', fontFamily: 'inherit',
-              border: `1px solid ${activeIdx === i ? '#d4a017' : '#e2e8f0'}`,
+              border: `1px solid ${activeIdx === i ? '#1B2A6B' : '#e2e8f0'}`,
               backgroundColor: activeIdx === i ? '#fef9ee' : '#fff',
-              color: activeIdx === i ? '#d4a017' : '#64748b',
+              color: activeIdx === i ? '#1B2A6B' : '#64748b',
             }}
           >
             {o.title.slice(0, 30)}{o.title.length > 30 ? '…' : ''}
@@ -188,7 +188,7 @@ function CompareContent() {
                 >
                   <Link
                     href={`/opportunities/${o.id}`}
-                    style={{ fontSize: '13px', fontWeight: 700, color: '#d4a017', textDecoration: 'none', display: 'block', lineHeight: 1.3 }}
+                    style={{ fontSize: '13px', fontWeight: 700, color: '#1B2A6B', textDecoration: 'none', display: 'block', lineHeight: 1.3 }}
                   >
                     {o.title}
                   </Link>
@@ -200,7 +200,7 @@ function CompareContent() {
                       href={o.application_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      style={{ display: 'inline-block', marginTop: '8px', fontSize: '11px', fontWeight: 600, color: '#d4a017', textDecoration: 'none', border: '1px solid #d4a017', borderRadius: '4px', padding: '3px 8px' }}
+                      style={{ display: 'inline-block', marginTop: '8px', fontSize: '11px', fontWeight: 600, color: '#1B2A6B', textDecoration: 'none', border: '1px solid #1B2A6B', borderRadius: '4px', padding: '3px 8px' }}
                     >
                       Apply →
                     </a>

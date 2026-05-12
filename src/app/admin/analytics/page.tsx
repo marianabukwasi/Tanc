@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
+﻿import { createClient } from '@supabase/supabase-js'
 
 function sb() {
   return createClient(
@@ -8,7 +8,7 @@ function sb() {
   )
 }
 
-function BarChart({ items, color = '#d4a017' }: { items: { label: string; value: number }[]; color?: string }) {
+function BarChart({ items, color = '#1B2A6B' }: { items: { label: string; value: number }[]; color?: string }) {
   if (items.length === 0) return <div style={{ color: '#94a3b8', fontSize: '13px' }}>No data</div>
   const max = Math.max(...items.map(i => i.value), 1)
   return (
@@ -122,7 +122,7 @@ export default async function AnalyticsPage() {
         </Card>
 
         <Card title="Opportunities by type">
-          <BarChart items={typeChart} color="#d4a017" />
+          <BarChart items={typeChart} color="#1B2A6B" />
         </Card>
 
         <Card title="Top saved opportunities">

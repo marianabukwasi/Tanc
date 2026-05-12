@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { lookupVisa } from '@/lib/visaRequirements'
 import { ExternalLink } from 'lucide-react'
@@ -29,7 +29,7 @@ export default function VisaIndicator({ userNationality, oppCountry, oppFormat }
           href={`https://www.ivisa.com/`}
           target="_blank"
           rel="noopener noreferrer"
-          style={{ fontSize: '12px', color: '#d4a017', fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+          style={{ fontSize: '12px', color: '#1B2A6B', fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
         >
           Check visa requirements <ExternalLink size={11} />
         </a>
@@ -66,7 +66,7 @@ export default function VisaIndicator({ userNationality, oppCountry, oppFormat }
         </div>
         {visa.notes && <div style={{ fontSize: '12px', color: '#475569', lineHeight: 1.5, marginBottom: visa.embassyUrl ? '8px' : 0 }}>{visa.notes}</div>}
         {visa.embassyUrl && (
-          <a href={visa.embassyUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '12px', color: '#d4a017', fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+          <a href={visa.embassyUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '12px', color: '#1B2A6B', fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
             Apply online <ExternalLink size={11} />
           </a>
         )}

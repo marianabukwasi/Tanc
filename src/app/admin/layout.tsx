@@ -1,4 +1,4 @@
-import { AdminNav } from '@/components/AdminNav'
+﻿import { AdminNav } from '@/components/AdminNav'
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -16,7 +16,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         flexDirection: 'column',
       }}>
         <div style={{ padding: '20px 20px 12px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-          <div style={{ fontSize: '13px', fontWeight: 700, color: '#d4a017', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+          <div style={{ fontSize: '13px', fontWeight: 700, color: '#1B2A6B', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
             TANC Admin
           </div>
         </div>

@@ -442,8 +442,8 @@ export default function OpportunityDetailPage() {
                 style={{
                   background: 'none', border: 'none', cursor: 'pointer',
                   padding: '10px 16px', fontSize: '14px', fontWeight: 600,
-                  color: activeTab === tab ? '#d4a017' : '#64748b',
-                  borderBottom: activeTab === tab ? '2px solid #d4a017' : '2px solid transparent',
+                  color: activeTab === tab ? '#1B2A6B' : '#64748b',
+                  borderBottom: activeTab === tab ? '2px solid #1B2A6B' : '2px solid transparent',
                   marginBottom: '-2px', transition: 'color 0.15s',
                 }}
               >
@@ -465,7 +465,7 @@ export default function OpportunityDetailPage() {
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {highlights.map((h, i) => (
                   <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', fontSize: '14px', color: '#334155' }}>
-                    <span style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: '#d4a017', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
+                    <span style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: '#1B2A6B', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
                       <Check size={12} color="#ffffff" />
                     </span>
                     {h}
@@ -482,7 +482,7 @@ export default function OpportunityDetailPage() {
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '28px' }}>
                 {requirements.map((r, i) => (
                   <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', fontSize: '14px', color: '#334155', padding: '10px 14px', backgroundColor: '#f8fafc', borderRadius: '8px' }}>
-                    <BookOpen size={15} style={{ flexShrink: 0, marginTop: '1px', color: '#d4a017' }} />
+                    <BookOpen size={15} style={{ flexShrink: 0, marginTop: '1px', color: '#1B2A6B' }} />
                     {r}
                   </li>
                 ))}
@@ -501,12 +501,12 @@ export default function OpportunityDetailPage() {
               ) : authUser === null ? (
                 <div style={{ padding: '20px', backgroundColor: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0', textAlign: 'center' }}>
                   <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '12px' }}>Sign in to see your personalised eligibility breakdown</p>
-                  <Link href="/signin" style={{ display: 'inline-block', padding: '8px 20px', backgroundColor: '#d4a017', color: '#ffffff', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textDecoration: 'none' }}>Sign in</Link>
+                  <Link href="/signin" style={{ display: 'inline-block', padding: '8px 20px', backgroundColor: '#1B2A6B', color: '#ffffff', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textDecoration: 'none' }}>Sign in</Link>
                 </div>
               ) : (
                 <div style={{ padding: '20px', backgroundColor: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0', textAlign: 'center' }}>
                   <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '12px' }}>Complete your profile to see your eligibility breakdown</p>
-                  <Link href="/profile/setup" style={{ display: 'inline-block', padding: '8px 20px', backgroundColor: '#d4a017', color: '#ffffff', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textDecoration: 'none' }}>Complete profile</Link>
+                  <Link href="/profile/setup" style={{ display: 'inline-block', padding: '8px 20px', backgroundColor: '#1B2A6B', color: '#ffffff', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textDecoration: 'none' }}>Complete profile</Link>
                 </div>
               )}
             </div>
@@ -519,7 +519,7 @@ export default function OpportunityDetailPage() {
               <ol style={{ listStyle: 'none', padding: 0, margin: '0 0 32px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 {applySteps.map((step, i) => (
                   <li key={i} style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
-                    <span style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: '#d4a017', color: '#ffffff', fontSize: '13px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{i + 1}</span>
+                    <span style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: '#1B2A6B', color: '#ffffff', fontSize: '13px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{i + 1}</span>
                     <span style={{ fontSize: '14px', color: '#334155', lineHeight: 1.6, paddingTop: '4px' }}>{step}</span>
                   </li>
                 ))}
@@ -529,7 +529,7 @@ export default function OpportunityDetailPage() {
               <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 28px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {documents.map((doc, i) => (
                   <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', color: '#334155', padding: '9px 14px', backgroundColor: '#f8fafc', borderRadius: '8px' }}>
-                    <FileText size={14} color="#d4a017" style={{ flexShrink: 0 }} />
+                    <FileText size={14} color="#1B2A6B" style={{ flexShrink: 0 }} />
                     {doc}
                   </li>
                 ))}
@@ -539,7 +539,7 @@ export default function OpportunityDetailPage() {
               <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 28px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {tips.map((tip, i) => (
                   <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', fontSize: '14px', color: '#334155', lineHeight: 1.55 }}>
-                    <span style={{ color: '#d4a017', fontSize: '16px', flexShrink: 0, lineHeight: 1.4 }}>✦</span>
+                    <span style={{ color: '#1B2A6B', fontSize: '16px', flexShrink: 0, lineHeight: 1.4 }}>✦</span>
                     {tip}
                   </li>
                 ))}
@@ -550,7 +550,7 @@ export default function OpportunityDetailPage() {
                   href={opportunity.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: '#d4a017', color: '#ffffff', borderRadius: '10px', fontSize: '15px', fontWeight: 700, textDecoration: 'none' }}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: '#1B2A6B', color: '#ffffff', borderRadius: '10px', fontSize: '15px', fontWeight: 700, textDecoration: 'none' }}
                 >
                   Apply on {opportunity.organization} website
                   <ExternalLink size={15} />
@@ -608,14 +608,14 @@ export default function OpportunityDetailPage() {
               href={opportunity.website}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', padding: '13px', backgroundColor: '#d4a017', color: '#ffffff', borderRadius: '10px', fontSize: '15px', fontWeight: 700, textDecoration: 'none', marginBottom: '10px', boxSizing: 'border-box' }}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', padding: '13px', backgroundColor: '#1B2A6B', color: '#ffffff', borderRadius: '10px', fontSize: '15px', fontWeight: 700, textDecoration: 'none', marginBottom: '10px', boxSizing: 'border-box' }}
             >
               Apply Now <ExternalLink size={15} />
             </a>
           ) : (
             <button
               disabled
-              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', padding: '13px', backgroundColor: '#e2c76a', color: '#ffffff', borderRadius: '10px', fontSize: '15px', fontWeight: 700, border: 'none', cursor: 'not-allowed', marginBottom: '10px' }}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', padding: '13px', backgroundColor: '#8B9DC3', color: '#ffffff', borderRadius: '10px', fontSize: '15px', fontWeight: 700, border: 'none', cursor: 'not-allowed', marginBottom: '10px' }}
             >
               No website available
             </button>
@@ -641,13 +641,13 @@ export default function OpportunityDetailPage() {
               style={{
                 flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
                 padding: '10px', borderRadius: '8px', fontSize: '13px', fontWeight: 600,
-                border: `1px solid ${saved ? '#d4a017' : '#e2e8f0'}`,
+                border: `1px solid ${saved ? '#1B2A6B' : '#e2e8f0'}`,
                 backgroundColor: saved ? '#fef9ee' : '#ffffff',
-                color: saved ? '#d4a017' : '#475569',
+                color: saved ? '#1B2A6B' : '#475569',
                 cursor: 'pointer',
               }}
             >
-              <Bookmark size={14} fill={saved ? '#d4a017' : 'none'} />
+              <Bookmark size={14} fill={saved ? '#1B2A6B' : 'none'} />
               {saved ? 'Saved' : 'Save'}
             </button>
             <button

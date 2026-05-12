@@ -1,4 +1,4 @@
-import { Check } from 'lucide-react'
+﻿import { Check } from 'lucide-react'
 
 const PILLS = ['Free forever', 'Personalised matches', 'Step by step guidance']
 
@@ -9,7 +9,7 @@ export default function AuthRightPanel() {
         className="auth-panel"
         style={{
           width: '45%',
-          backgroundColor: '#d4a017',
+          backgroundColor: '#1B2A6B',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',

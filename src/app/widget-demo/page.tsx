@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
@@ -47,7 +47,7 @@ function PreviewCard({ o, isDark }: { o: OppPreview; isDark: boolean }) {
       style={{ display: 'block', textDecoration: 'none', padding: '14px', marginBottom: '8px', border: `1px solid ${colors.border}`, borderRadius: '10px', background: colors.bg }}
     >
       {o.type && (
-        <span style={{ display: 'inline-block', fontSize: '10px', fontWeight: 700, padding: '2px 8px', borderRadius: '50px', background: colors.tag, color: '#d4a017', textTransform: 'uppercase', letterSpacing: '0.4px', marginBottom: '8px' }}>{o.type}</span>
+        <span style={{ display: 'inline-block', fontSize: '10px', fontWeight: 700, padding: '2px 8px', borderRadius: '50px', background: colors.tag, color: '#1B2A6B', textTransform: 'uppercase', letterSpacing: '0.4px', marginBottom: '8px' }}>{o.type}</span>
       )}
       <div style={{ fontSize: '14px', fontWeight: 700, color: colors.text, lineHeight: 1.35, marginBottom: '4px' }}>{o.title}</div>
       {o.organization && <div style={{ fontSize: '12px', color: colors.sub, marginBottom: '4px' }}>{o.organization}</div>}
@@ -57,7 +57,7 @@ function PreviewCard({ o, isDark }: { o: OppPreview; isDark: boolean }) {
       </div>
       {o.funding && (
         <div style={{ marginTop: '6px' }}>
-          <span style={{ display: 'inline-block', fontSize: '10px', fontWeight: 600, padding: '2px 8px', borderRadius: '50px', background: colors.tag, color: '#d4a017', border: '1px solid #d4a017' }}>{o.funding}</span>
+          <span style={{ display: 'inline-block', fontSize: '10px', fontWeight: 600, padding: '2px 8px', borderRadius: '50px', background: colors.tag, color: '#1B2A6B', border: '1px solid #1B2A6B' }}>{o.funding}</span>
         </div>
       )}
     </a>
@@ -164,9 +164,9 @@ export default function WidgetDemoPage() {
                     style={{
                       flex: 1, padding: '8px', borderRadius: '8px', cursor: 'pointer',
                       fontFamily: 'inherit', fontSize: '13px', fontWeight: 600,
-                      border: `1px solid ${theme === t ? '#d4a017' : '#e2e8f0'}`,
+                      border: `1px solid ${theme === t ? '#1B2A6B' : '#e2e8f0'}`,
                       backgroundColor: theme === t ? '#fef9ee' : '#fff',
-                      color: theme === t ? '#d4a017' : '#64748b',
+                      color: theme === t ? '#1B2A6B' : '#64748b',
                     }}
                   >
                     {t.charAt(0).toUpperCase() + t.slice(1)}
@@ -198,7 +198,7 @@ export default function WidgetDemoPage() {
 
           <p style={{ fontSize: '12px', color: '#94a3b8', marginTop: '12px' }}>
             Paste this tag anywhere in your HTML. No API key required.{' '}
-            <Link href="/api/widget" style={{ color: '#d4a017', textDecoration: 'none' }}>View raw API →</Link>
+            <Link href="/api/widget" style={{ color: '#1B2A6B', textDecoration: 'none' }}>View raw API →</Link>
           </p>
         </div>
 
@@ -218,7 +218,7 @@ export default function WidgetDemoPage() {
                     href="/opportunities"
                     style={{ fontSize: '11px', color: isDark ? '#94a3b8' : '#64748b', textDecoration: 'none' }}
                   >
-                    Powered by <strong style={{ color: '#d4a017' }}>TANC</strong> — Global Opportunity Platform
+                    Powered by <strong style={{ color: '#1B2A6B' }}>TANC</strong> — Global Opportunity Platform
                   </Link>
                 </div>
               </>

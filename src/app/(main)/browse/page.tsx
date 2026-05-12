@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useCallback, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -179,9 +179,9 @@ function MatchBadge({ info }: { info: MatchInfo }) {
           display: 'inline-flex',
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: '#fef9e7',
-          color: '#d4a017',
-          border: '1px solid #d4a017',
+          backgroundColor: '#eef0fa',
+          color: '#1B2A6B',
+          border: '1px solid #1B2A6B',
           fontSize: '14px',
           fontWeight: 700,
           padding: '3px 10px',
@@ -197,8 +197,8 @@ function MatchBadge({ info }: { info: MatchInfo }) {
 
   // state === 'score'
   const { value, isEstimate } = info
-  const color  = value >= 70 ? '#15803d' : value >= 50 ? '#d4a017' : '#64748b'
-  const bg     = value >= 70 ? '#f0fdf4' : value >= 50 ? '#fef9e7' : '#f8fafc'
+  const color  = value >= 70 ? '#15803d' : value >= 50 ? '#1B2A6B' : '#64748b'
+  const bg     = value >= 70 ? '#f0fdf4' : value >= 50 ? '#eef0fa' : '#f8fafc'
   const border = value >= 70 ? '#86efac' : value >= 50 ? '#fcd34d' : '#e2e8f0'
 
   return (
@@ -260,7 +260,7 @@ function OpportunityCard({ opp, matchInfo }: { opp: Opportunity; matchInfo: Matc
       onClick={() => router.push(`/opportunity/${opp.id}`)}
       style={{
         backgroundColor: '#ffffff',
-        border: `1px solid ${hovered ? '#d4a017' : '#e2e8f0'}`,
+        border: `1px solid ${hovered ? '#1B2A6B' : '#e2e8f0'}`,
         borderRadius: '12px',
         padding: '20px',
         display: 'flex',
@@ -277,9 +277,9 @@ function OpportunityCard({ opp, matchInfo }: { opp: Opportunity; matchInfo: Matc
         <button
           onClick={(e) => { e.stopPropagation(); setSaved(!saved) }}
           aria-label="Save opportunity"
-          style={{ background: 'none', border: 'none', cursor: 'pointer', color: saved ? '#d4a017' : '#cbd5e1', padding: '2px', display: 'flex', flexShrink: 0 }}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', color: saved ? '#1B2A6B' : '#cbd5e1', padding: '2px', display: 'flex', flexShrink: 0 }}
         >
-          <Bookmark size={16} fill={saved ? '#d4a017' : 'none'} />
+          <Bookmark size={16} fill={saved ? '#1B2A6B' : 'none'} />
         </button>
       </div>
 
@@ -298,13 +298,13 @@ function OpportunityCard({ opp, matchInfo }: { opp: Opportunity; matchInfo: Matc
         </div>
       )}
 
-      <span style={{ display: 'inline-block', backgroundColor: '#fef9e7', color: '#d4a017', border: '1px solid #d4a017', fontSize: '11px', fontWeight: 600, padding: '3px 10px', borderRadius: '50px', width: 'fit-content' }}>
+      <span style={{ display: 'inline-block', backgroundColor: '#eef0fa', color: '#1B2A6B', border: '1px solid #1B2A6B', fontSize: '11px', fontWeight: 600, padding: '3px 10px', borderRadius: '50px', width: 'fit-content' }}>
         {opp.funding_type}
       </span>
 
       <button
         onClick={(e) => { e.stopPropagation(); router.push(`/opportunity/${opp.id}`) }}
-        style={{ marginTop: '4px', backgroundColor: '#d4a017', color: '#ffffff', border: 'none', borderRadius: '8px', padding: '10px 0', fontWeight: 600, fontSize: '14px', cursor: 'pointer', width: '100%', fontFamily: 'inherit' }}
+        style={{ marginTop: '4px', backgroundColor: '#1B2A6B', color: '#ffffff', border: 'none', borderRadius: '8px', padding: '10px 0', fontWeight: 600, fontSize: '14px', cursor: 'pointer', width: '100%', fontFamily: 'inherit' }}
       >
         View Details
       </button>
@@ -329,7 +329,7 @@ function FilterSection({ label, options, value, onChange }: {
             <label key={opt} style={{ display: 'flex', alignItems: 'center', gap: '9px', cursor: 'pointer', fontSize: '14px', color: checked ? '#0a1628' : '#475569', fontWeight: checked ? 500 : 400 }}>
               <span
                 onClick={() => onChange(opt)}
-                style={{ width: '16px', height: '16px', borderRadius: '4px', border: `2px solid ${checked ? '#d4a017' : '#e2e8f0'}`, backgroundColor: checked ? '#d4a017' : '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'all 0.15s' }}
+                style={{ width: '16px', height: '16px', borderRadius: '4px', border: `2px solid ${checked ? '#1B2A6B' : '#e2e8f0'}`, backgroundColor: checked ? '#1B2A6B' : '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'all 0.15s' }}
               >
                 {checked && (
                   <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
@@ -459,7 +459,7 @@ function BrowsePageContent() {
         <aside style={{ width: '280px', flexShrink: 0, padding: '24px', borderRight: '1px solid #e2e8f0', minHeight: 'calc(100vh - 130px)', boxSizing: 'border-box' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
             <span style={{ fontWeight: 700, fontSize: '16px', color: '#0a1628' }}>Filter Results</span>
-            <button onClick={clearAll} style={{ background: 'none', border: 'none', color: '#d4a017', fontSize: '13px', fontWeight: 600, cursor: 'pointer', padding: 0 }}>
+            <button onClick={clearAll} style={{ background: 'none', border: 'none', color: '#1B2A6B', fontSize: '13px', fontWeight: 600, cursor: 'pointer', padding: 0 }}>
               Clear All
             </button>
           </div>
@@ -512,7 +512,7 @@ function BrowsePageContent() {
             </div>
           ) : results.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '80px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
-              <Star size={40} color="#d4a017" fill="#fef9e7" />
+              <Star size={40} color="#1B2A6B" fill="#eef0fa" />
               <p style={{ color: '#475569', fontSize: '16px', margin: 0, maxWidth: '360px' }}>
                 No opportunities match your filters. Try adjusting your search.
               </p>
@@ -547,7 +547,7 @@ function BrowsePageContent() {
                   <button
                     key={p}
                     onClick={() => setPage(p as number)}
-                    style={{ width: '36px', height: '36px', borderRadius: '8px', border: `1px solid ${page === p ? '#d4a017' : '#e2e8f0'}`, backgroundColor: page === p ? '#d4a017' : '#ffffff', color: page === p ? '#ffffff' : '#0a1628', cursor: 'pointer', fontSize: '14px', fontWeight: 500 }}
+                    style={{ width: '36px', height: '36px', borderRadius: '8px', border: `1px solid ${page === p ? '#1B2A6B' : '#e2e8f0'}`, backgroundColor: page === p ? '#1B2A6B' : '#ffffff', color: page === p ? '#ffffff' : '#0a1628', cursor: 'pointer', fontSize: '14px', fontWeight: 500 }}
                   >
                     {p}
                   </button>

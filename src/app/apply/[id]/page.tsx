@@ -321,7 +321,7 @@ export default function ApplyPage() {
                 borderRadius: '8px', resize: 'vertical', fontFamily: 'inherit',
                 outline: 'none', boxSizing: 'border-box', backgroundColor: '#fafafa',
               }}
-              onFocus={e => { e.currentTarget.style.borderColor = '#d4a017' }}
+              onFocus={e => { e.currentTarget.style.borderColor = '#1B2A6B' }}
               onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0' }}
             />
             <div style={{ marginTop: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -334,8 +334,8 @@ export default function ApplyPage() {
                   sendMessage(prompt)
                 }}
                 style={{
-                  fontSize: '12px', fontWeight: 600, color: '#d4a017',
-                  background: 'none', border: '1px solid #d4a017', borderRadius: '6px',
+                  fontSize: '12px', fontWeight: 600, color: '#1B2A6B',
+                  background: 'none', border: '1px solid #1B2A6B', borderRadius: '6px',
                   padding: '5px 12px', cursor: 'pointer',
                 }}
               >
@@ -401,7 +401,7 @@ export default function ApplyPage() {
                   ? appState.personalStatement.slice(0, 100) + (appState.personalStatement.length > 100 ? '…' : '')
                   : 'Not written yet',
                 progress: appState.personalStatement.length > 50 ? 1 : 0,
-                color: '#d4a017',
+                color: '#1B2A6B',
               },
               {
                 label: 'References',
@@ -448,7 +448,7 @@ export default function ApplyPage() {
                 rel="noopener noreferrer"
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: '8px',
-                  padding: '14px 32px', backgroundColor: '#d4a017', color: '#ffffff',
+                  padding: '14px 32px', backgroundColor: '#1B2A6B', color: '#ffffff',
                   borderRadius: '10px', fontSize: '16px', fontWeight: 700, textDecoration: 'none',
                 }}
               >
@@ -497,8 +497,8 @@ export default function ApplyPage() {
           <ArrowLeft size={16} /> Back
         </button>
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
-          <Star size={13} fill="#d4a017" color="#d4a017" />
-          <span style={{ fontSize: '13px', fontWeight: 600, color: '#d4a017', whiteSpace: 'nowrap' }}>Application Guide</span>
+          <Star size={13} fill="#1B2A6B" color="#1B2A6B" />
+          <span style={{ fontSize: '13px', fontWeight: 600, color: '#1B2A6B', whiteSpace: 'nowrap' }}>Application Guide</span>
           <span style={{ color: '#475569', fontSize: '13px' }}>—</span>
           <span style={{ fontSize: '13px', color: '#e2e8f0', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {opp.title}
@@ -529,7 +529,7 @@ export default function ApplyPage() {
             </div>
             <div style={{ height: '6px', backgroundColor: '#f1f5f9', borderRadius: '3px', overflow: 'hidden' }}>
               <div style={{
-                height: '100%', width: `${pct}%`, backgroundColor: '#d4a017',
+                height: '100%', width: `${pct}%`, backgroundColor: '#1B2A6B',
                 borderRadius: '3px', transition: 'width 0.4s ease',
               }} />
             </div>
@@ -555,7 +555,7 @@ export default function ApplyPage() {
                       width: '22px', height: '22px', borderRadius: '50%', flexShrink: 0,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       fontSize: '11px', fontWeight: 700,
-                      backgroundColor: done ? '#16a34a' : active ? '#d4a017' : '#f1f5f9',
+                      backgroundColor: done ? '#16a34a' : active ? '#1B2A6B' : '#f1f5f9',
                       color: done || active ? '#ffffff' : '#94a3b8',
                     }}>
                       {done ? <Check size={12} /> : stepNum}
@@ -596,7 +596,7 @@ export default function ApplyPage() {
                 onClick={() => goToStep(appState.currentStep + 1)}
                 style={{
                   flex: 2, padding: '10px', borderRadius: '8px', fontSize: '13px', fontWeight: 700,
-                  border: 'none', backgroundColor: '#d4a017', color: '#ffffff', cursor: 'pointer',
+                  border: 'none', backgroundColor: '#1B2A6B', color: '#ffffff', cursor: 'pointer',
                 }}
               >
                 Next Step
@@ -610,7 +610,7 @@ export default function ApplyPage() {
 
           {/* Chat header */}
           <div style={{ padding: '14px 24px', borderBottom: '1px solid #e2e8f0', backgroundColor: '#ffffff', flexShrink: 0 }}>
-            <p style={{ fontSize: '14px', fontWeight: 700, color: '#0a1628' }}>AI Application Assistant</p>
+            <p style={{ fontSize: '14px', fontWeight: 700, color: '#0a1628' }}>Marie — Application Guide</p>
             <p style={{ fontSize: '12px', color: '#94a3b8' }}>Ask anything about your application — guided advice for {opp.title}</p>
           </div>
 
@@ -621,7 +621,7 @@ export default function ApplyPage() {
                 <div style={{
                   maxWidth: '80%', padding: '12px 16px',
                   borderRadius: msg.role === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
-                  backgroundColor: msg.role === 'user' ? '#0a1628' : '#ffffff',
+                  backgroundColor: msg.role === 'user' ? '#1B2A6B' : '#ffffff',
                   color: msg.role === 'user' ? '#ffffff' : '#334155',
                   fontSize: '14px', lineHeight: 1.65,
                   border: msg.role === 'assistant' ? '1px solid #e2e8f0' : 'none',
@@ -681,7 +681,7 @@ export default function ApplyPage() {
                 disabled={streaming || !inputVal.trim()}
                 style={{
                   width: '42px', height: '42px', borderRadius: '10px', border: 'none',
-                  backgroundColor: streaming || !inputVal.trim() ? '#e2e8f0' : '#d4a017',
+                  backgroundColor: streaming || !inputVal.trim() ? '#e2e8f0' : '#1B2A6B',
                   color: '#ffffff', cursor: streaming || !inputVal.trim() ? 'not-allowed' : 'pointer',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                   transition: 'background-color 0.15s',

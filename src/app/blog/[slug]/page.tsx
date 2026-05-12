@@ -63,7 +63,7 @@ export default async function BlogPostPage(
               key={tag}
               style={{
                 fontSize: '10px', fontWeight: 600, padding: '3px 9px', borderRadius: '50px',
-                backgroundColor: '#fef9ee', color: '#d4a017',
+                backgroundColor: '#fef9ee', color: '#1B2A6B',
                 textTransform: 'uppercase', letterSpacing: '0.4px',
               }}
             >{tag}</span>
@@ -84,7 +84,7 @@ export default async function BlogPostPage(
       {post.description && (
         <p style={{
           fontSize: '18px', color: '#475569', lineHeight: 1.7, marginBottom: '32px',
-          fontWeight: 400, borderLeft: '3px solid #d4a017', paddingLeft: '16px',
+          fontWeight: 400, borderLeft: '3px solid #1B2A6B', paddingLeft: '16px',
         }}>
           {post.description as string}
         </p>
@@ -101,7 +101,7 @@ export default async function BlogPostPage(
           href="/opportunities"
           style={{
             display: 'inline-block', padding: '11px 24px',
-            backgroundColor: '#0a1628', color: '#d4a017',
+            backgroundColor: '#0a1628', color: '#1B2A6B',
             borderRadius: '8px', fontSize: '14px', fontWeight: 600, textDecoration: 'none',
           }}
         >

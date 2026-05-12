@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
@@ -100,7 +100,7 @@ export default function ManagePage() {
         </div>
         <button
           onClick={() => router.push('/admin/add')}
-          style={{ padding: '10px 20px', backgroundColor: '#d4a017', color: '#ffffff', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 700, cursor: 'pointer' }}
+          style={{ padding: '10px 20px', backgroundColor: '#1B2A6B', color: '#ffffff', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 700, cursor: 'pointer' }}
         >
           + Add Opportunity
         </button>
@@ -193,7 +193,7 @@ export default function ManagePage() {
                           title={opp.is_featured ? 'Unfeature' : 'Feature'}
                           style={{ display: 'flex', alignItems: 'center', padding: '5px 7px', border: '1px solid #e2e8f0', borderRadius: '6px', backgroundColor: '#ffffff', cursor: 'pointer' }}
                         >
-                          <Star size={12} fill={opp.is_featured ? '#d4a017' : 'none'} color={opp.is_featured ? '#d4a017' : '#cbd5e1'} />
+                          <Star size={12} fill={opp.is_featured ? '#1B2A6B' : 'none'} color={opp.is_featured ? '#1B2A6B' : '#cbd5e1'} />
                         </button>
                         <button
                           onClick={() => toggleArchive(opp)}

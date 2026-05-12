@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
@@ -209,7 +209,7 @@ export default function TrackerCard({ entry, onRemove, onUpdate, storySubmitted 
   const done  = tasks.filter(t => t.done).length
   const total = tasks.length
   const pct   = total ? Math.round((done / total) * 100) : 0
-  const barColor = pct === 100 ? '#15803d' : pct >= 60 ? '#d4a017' : '#3b82f6'
+  const barColor = pct === 100 ? '#15803d' : pct >= 60 ? '#1B2A6B' : '#3b82f6'
 
   const days = opp.application_deadline
     ? Math.ceil((new Date(opp.application_deadline).getTime() - Date.now()) / 86400000)
@@ -348,8 +348,8 @@ export default function TrackerCard({ entry, onRemove, onUpdate, storySubmitted 
                   onClick={() => toggleTask(task.id)}
                   style={{
                     width: '18px', height: '18px', borderRadius: '4px', flexShrink: 0,
-                    border: `2px solid ${task.done ? '#d4a017' : '#cbd5e1'}`,
-                    backgroundColor: task.done ? '#d4a017' : '#fff',
+                    border: `2px solid ${task.done ? '#1B2A6B' : '#cbd5e1'}`,
+                    backgroundColor: task.done ? '#1B2A6B' : '#fff',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     cursor: 'pointer', padding: 0, transition: 'all 0.15s',
                   }}
@@ -392,7 +392,7 @@ export default function TrackerCard({ entry, onRemove, onUpdate, storySubmitted 
                 onClick={addTask}
                 style={{
                   padding: '7px 12px', borderRadius: '8px', border: 'none',
-                  backgroundColor: '#d4a017', color: '#fff', cursor: 'pointer',
+                  backgroundColor: '#1B2A6B', color: '#fff', cursor: 'pointer',
                   display: 'flex', alignItems: 'center',
                 }}
               >
@@ -478,7 +478,7 @@ export default function TrackerCard({ entry, onRemove, onUpdate, storySubmitted 
                   <button
                     onClick={submitStory}
                     disabled={storySaving || !storyName.trim() || !storyText.trim()}
-                    style={{ padding: '7px 16px', border: 'none', borderRadius: '7px', backgroundColor: storySaving ? '#b8891a' : '#d4a017', color: '#ffffff', fontSize: '12px', fontWeight: 700, cursor: storySaving ? 'not-allowed' : 'pointer' }}
+                    style={{ padding: '7px 16px', border: 'none', borderRadius: '7px', backgroundColor: storySaving ? '#b8891a' : '#1B2A6B', color: '#ffffff', fontSize: '12px', fontWeight: 700, cursor: storySaving ? 'not-allowed' : 'pointer' }}
                   >
                     {storySaving ? 'Submitting…' : 'Submit story'}
                   </button>

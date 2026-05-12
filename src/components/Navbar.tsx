@@ -5,6 +5,20 @@ import { Star, Menu, X } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import type { User } from '@supabase/supabase-js'
 
+const PUBLIC_LINKS = [
+  { label: 'Opportunities', href: '/opportunities' },
+  { label: 'Blog',          href: '/blog'          },
+  { label: 'About',         href: '/about'         },
+]
+
+const AUTH_LINKS = [
+  { label: 'Opportunities', href: '/opportunities' },
+  { label: 'Tracker',       href: '/tracker'       },
+  { label: 'Blog',          href: '/blog'          },
+  { label: 'About',         href: '/about'         },
+  { label: 'Profile',       href: '/profile'       },
+]
+
 export default function NavBar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [user, setUser] = useState<User | null>(null)
@@ -20,11 +34,7 @@ export default function NavBar() {
     return () => subscription.unsubscribe()
   }, [])
 
-  const authedLinks = [
-    { label: 'Opportunities', href: '/opportunities' },
-    { label: 'Tracker',       href: '/tracker' },
-    { label: 'Profile',       href: '/profile' },
-  ]
+  const links = user ? AUTH_LINKS : PUBLIC_LINKS
 
   return (
     <>
@@ -42,26 +52,24 @@ export default function NavBar() {
         padding: '0 48px',
       }}>
         <a href="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', minWidth: '120px' }}>
-          <Star size={14} fill="#d4a017" color="#d4a017" />
+          <Star size={14} fill="#1B2A6B" color="#1B2A6B" />
           <div>
             <div style={{ fontWeight: 700, color: '#0a1628', fontSize: '18px', lineHeight: 1 }}>TANC</div>
             <div style={{ fontSize: '10px', color: '#475569', lineHeight: 1.2 }}>tancglobal.com</div>
           </div>
         </a>
 
-        {user && (
-          <div style={{ flex: 1, display: 'flex', justifyContent: 'center', gap: '32px' }} className="hidden-mobile">
-            {authedLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                style={{ color: '#475569', textDecoration: 'none', fontSize: '14px', fontWeight: 500 }}
-              >
-                {link.label}
-              </a>
-            ))}
-          </div>
-        )}
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'center', gap: '32px' }} className="hidden-mobile">
+          {links.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              style={{ color: '#475569', textDecoration: 'none', fontSize: '14px', fontWeight: 500 }}
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginLeft: 'auto' }}>
           {user ? (
@@ -80,7 +88,7 @@ export default function NavBar() {
               <a
                 href="/signup"
                 style={{
-                  backgroundColor: '#d4a017',
+                  backgroundColor: '#1B2A6B',
                   color: '#ffffff',
                   textDecoration: 'none',
                   fontSize: '14px',
@@ -119,26 +127,24 @@ export default function NavBar() {
           flexDirection: 'column',
           gap: '16px',
         }}>
+          {links.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              style={{ color: '#0a1628', textDecoration: 'none', fontSize: '15px', fontWeight: 500 }}
+              onClick={() => setMobileOpen(false)}
+            >
+              {link.label}
+            </a>
+          ))}
           {user ? (
-            <>
-              {authedLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  style={{ color: '#0a1628', textDecoration: 'none', fontSize: '15px', fontWeight: 500 }}
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {link.label}
-                </a>
-              ))}
-              <a
-                href="/auth/logout"
-                style={{ color: '#475569', textDecoration: 'none', fontSize: '15px', fontWeight: 500 }}
-                onClick={() => setMobileOpen(false)}
-              >
-                Logout
-              </a>
-            </>
+            <a
+              href="/auth/logout"
+              style={{ color: '#475569', textDecoration: 'none', fontSize: '15px', fontWeight: 500 }}
+              onClick={() => setMobileOpen(false)}
+            >
+              Logout
+            </a>
           ) : (
             <>
               <a
@@ -150,7 +156,7 @@ export default function NavBar() {
               </a>
               <a
                 href="/signup"
-                style={{ color: '#ffffff', backgroundColor: '#d4a017', textDecoration: 'none', fontSize: '15px', fontWeight: 600, padding: '10px 20px', borderRadius: '8px', textAlign: 'center' }}
+                style={{ color: '#ffffff', backgroundColor: '#1B2A6B', textDecoration: 'none', fontSize: '15px', fontWeight: 600, padding: '10px 20px', borderRadius: '8px', textAlign: 'center' }}
                 onClick={() => setMobileOpen(false)}
               >
                 Sign Up

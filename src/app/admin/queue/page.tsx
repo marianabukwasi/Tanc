@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
@@ -142,7 +142,7 @@ export default function QueuePage() {
   const TABS: { key: Tab; label: string; count: number; accent?: string }[] = [
     { key: 'pending', label: 'Pending Approval', count: pending.length },
     { key: 'reports', label: 'Reports',          count: reports.length, accent: '#dc2626' },
-    { key: 'stories', label: 'Stories',          count: stories.length, accent: '#d4a017' },
+    { key: 'stories', label: 'Stories',          count: stories.length, accent: '#1B2A6B' },
   ]
 
   const totalItems = pending.length + reports.length + stories.length
@@ -165,8 +165,8 @@ export default function QueuePage() {
             style={{
               padding: '10px 20px', border: 'none', background: 'none', cursor: 'pointer',
               fontSize: '14px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px',
-              color: tab === key ? '#d4a017' : '#64748b',
-              borderBottom: `2px solid ${tab === key ? '#d4a017' : 'transparent'}`,
+              color: tab === key ? '#1B2A6B' : '#64748b',
+              borderBottom: `2px solid ${tab === key ? '#1B2A6B' : 'transparent'}`,
               marginBottom: '-1px',
             }}
           >
@@ -309,7 +309,7 @@ function StoriesTab({ items, busy, onApprove, onReject }: {
   if (items.length === 0) {
     return (
       <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '48px', textAlign: 'center' }}>
-        <Star size={32} color="#d4a017" style={{ marginBottom: '12px' }} />
+        <Star size={32} color="#1B2A6B" style={{ marginBottom: '12px' }} />
         <div style={{ fontWeight: 600, color: '#0a1628', marginBottom: '4px' }}>No pending stories!</div>
         <div style={{ fontSize: '13px', color: '#94a3b8' }}>All success stories have been reviewed.</div>
       </div>
@@ -322,7 +322,7 @@ function StoriesTab({ items, busy, onApprove, onReject }: {
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px' }}>
             <div style={{ flex: 1 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                <div style={{ width: '30px', height: '30px', borderRadius: '50%', backgroundColor: '#d4a017', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <div style={{ width: '30px', height: '30px', borderRadius: '50%', backgroundColor: '#1B2A6B', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <span style={{ color: '#ffffff', fontWeight: 700, fontSize: '12px' }}>
                     {(s.user_name ?? '?').charAt(0).toUpperCase()}
                   </span>
@@ -352,7 +352,7 @@ function StoriesTab({ items, busy, onApprove, onReject }: {
               <button
                 onClick={() => onApprove(s.id)}
                 disabled={busy === s.id}
-                style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '7px 14px', border: 'none', borderRadius: '7px', backgroundColor: '#d4a017', color: '#ffffff', fontSize: '12px', fontWeight: 700, cursor: busy === s.id ? 'not-allowed' : 'pointer', opacity: busy === s.id ? 0.7 : 1 }}
+                style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '7px 14px', border: 'none', borderRadius: '7px', backgroundColor: '#1B2A6B', color: '#ffffff', fontSize: '12px', fontWeight: 700, cursor: busy === s.id ? 'not-allowed' : 'pointer', opacity: busy === s.id ? 0.7 : 1 }}
               >
                 <CheckCircle size={13} /> Approve
               </button>

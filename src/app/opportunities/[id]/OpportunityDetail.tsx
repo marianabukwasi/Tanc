@@ -591,7 +591,7 @@ export default function OpportunityDetail({ id }: { id: string }) {
           {/* 2. Organization + website */}
           <div style={{ fontSize: '15px', color: '#475569', marginBottom: '20px' }}>
             {opp.organization_website ? (
-              <a href={opp.organization_website} target="_blank" rel="noopener noreferrer" style={{ color: '#d4a017', fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              <a href={opp.organization_website} target="_blank" rel="noopener noreferrer" style={{ color: '#1B2A6B', fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                 {opp.organization_name ?? 'View organizer'}
                 <ExternalLink size={13} />
               </a>
@@ -604,19 +604,19 @@ export default function OpportunityDetail({ id }: { id: string }) {
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', padding: '16px 20px', backgroundColor: '#f8fafc', borderRadius: '12px', marginBottom: '28px', fontSize: '13px', color: '#475569' }}>
             {(opp.city || opp.country) && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <MapPin size={14} color="#d4a017" />
+                <MapPin size={14} color="#1B2A6B" />
                 <span>{[opp.city, opp.country].filter(Boolean).join(', ')}</span>
               </div>
             )}
             {(opp.start_date || opp.end_date) && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <Calendar size={14} color="#d4a017" />
+                <Calendar size={14} color="#1B2A6B" />
                 <span>{fmtDate(opp.start_date)}{opp.end_date ? ` – ${fmtDate(opp.end_date)}` : ''}</span>
               </div>
             )}
             {opp.format && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <Flag size={14} color="#d4a017" />
+                <Flag size={14} color="#1B2A6B" />
                 <span style={{ textTransform: 'capitalize' }}>{opp.format}</span>
               </div>
             )}
@@ -674,7 +674,7 @@ export default function OpportunityDetail({ id }: { id: string }) {
                 opp.first_gen_preferred && 'First-generation students preferred',
               ].filter(Boolean).map((line, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', backgroundColor: '#f8fafc', borderRadius: '8px', fontSize: '14px', color: '#334155' }}>
-                  <Check size={14} color="#d4a017" style={{ flexShrink: 0 }} />
+                  <Check size={14} color="#1B2A6B" style={{ flexShrink: 0 }} />
                   {line}
                 </div>
               ))}
@@ -692,7 +692,7 @@ export default function OpportunityDetail({ id }: { id: string }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {docs.map((doc, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', backgroundColor: '#f8fafc', borderRadius: '8px', fontSize: '14px', color: '#334155' }}>
-                  <Check size={14} color="#d4a017" style={{ flexShrink: 0 }} />
+                  <Check size={14} color="#1B2A6B" style={{ flexShrink: 0 }} />
                   {doc}
                 </div>
               ))}
@@ -710,7 +710,7 @@ export default function OpportunityDetail({ id }: { id: string }) {
                 'Submit your application before the deadline and save your confirmation.',
               ].map((step, i) => (
                 <li key={i} style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
-                  <span style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: '#d4a017', color: '#fff', fontSize: '13px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{i + 1}</span>
+                  <span style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: '#1B2A6B', color: '#fff', fontSize: '13px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{i + 1}</span>
                   <span style={{ fontSize: '14px', color: '#334155', lineHeight: 1.6, paddingTop: '4px' }}>{step}</span>
                 </li>
               ))}
@@ -779,13 +779,13 @@ export default function OpportunityDetail({ id }: { id: string }) {
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
               width: '100%', padding: '12px', borderRadius: '10px', fontSize: '14px', fontWeight: 600,
-              border: `1px solid ${saved ? '#d4a017' : '#e2e8f0'}`,
+              border: `1px solid ${saved ? '#1B2A6B' : '#e2e8f0'}`,
               backgroundColor: saved ? '#fef9ee' : '#fff',
-              color: saved ? '#d4a017' : '#475569',
+              color: saved ? '#1B2A6B' : '#475569',
               cursor: 'pointer', boxSizing: 'border-box',
             }}
           >
-            <Bookmark size={15} fill={saved ? '#d4a017' : 'none'} />
+            <Bookmark size={15} fill={saved ? '#1B2A6B' : 'none'} />
             {saved ? 'Saved to tracker' : 'Save to tracker'}
           </button>
 
@@ -838,7 +838,7 @@ export default function OpportunityDetail({ id }: { id: string }) {
                 {ticketHref && (
                   <a
                     href={ticketHref}
-                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', padding: '12px', backgroundColor: '#d4a017', color: '#fff', borderRadius: '10px', fontSize: '14px', fontWeight: 700, textDecoration: 'none', boxSizing: 'border-box' }}
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', padding: '12px', backgroundColor: '#1B2A6B', color: '#fff', borderRadius: '10px', fontSize: '14px', fontWeight: 700, textDecoration: 'none', boxSizing: 'border-box' }}
                   >
                     <Ticket size={15} />
                     {opp.ticket_affiliate_url ? 'Get Tickets' : 'Find Tickets'}

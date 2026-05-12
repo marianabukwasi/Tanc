@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
+﻿import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 
@@ -65,7 +65,7 @@ export default async function BlogPage() {
                       key={tag}
                       style={{
                         fontSize: '10px', fontWeight: 600, padding: '3px 9px', borderRadius: '50px',
-                        backgroundColor: '#fef9ee', color: '#d4a017',
+                        backgroundColor: '#fef9ee', color: '#1B2A6B',
                         textTransform: 'uppercase', letterSpacing: '0.4px',
                       }}
                     >{tag}</span>
@@ -90,7 +90,7 @@ export default async function BlogPage() {
                 )}
                 <Link
                   href={`/blog/${post.slug}`}
-                  style={{ fontSize: '13px', fontWeight: 600, color: '#d4a017', textDecoration: 'none' }}
+                  style={{ fontSize: '13px', fontWeight: 600, color: '#1B2A6B', textDecoration: 'none' }}
                 >
                   Read more →
                 </Link>

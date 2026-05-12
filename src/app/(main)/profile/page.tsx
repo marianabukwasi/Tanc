@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -103,7 +103,7 @@ function FieldRow({ label, value }: { label: string; value: React.ReactNode }) {
 
 function EditBtn({ onClick }: { onClick: () => void }) {
   return (
-    <button onClick={onClick} style={{ background: 'none', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '6px 14px', fontSize: '13px', fontWeight: 600, color: '#d4a017', cursor: 'pointer', fontFamily: 'inherit' }}>
+    <button onClick={onClick} style={{ background: 'none', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '6px 14px', fontSize: '13px', fontWeight: 600, color: '#1B2A6B', cursor: 'pointer', fontFamily: 'inherit' }}>
       Edit
     </button>
   )
@@ -115,7 +115,7 @@ function SaveCancelRow({ onCancel, saving, label = 'Save' }: { onCancel: () => v
       <button type="button" onClick={onCancel} style={{ padding: '0 20px', height: '40px', backgroundColor: '#f1f5f9', color: '#475569', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
         Cancel
       </button>
-      <button type="submit" disabled={saving} style={{ padding: '0 24px', height: '40px', backgroundColor: saving ? '#e2c76a' : '#d4a017', color: '#ffffff', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 600, cursor: saving ? 'not-allowed' : 'pointer', fontFamily: 'inherit' }}>
+      <button type="submit" disabled={saving} style={{ padding: '0 24px', height: '40px', backgroundColor: saving ? '#8B9DC3' : '#1B2A6B', color: '#ffffff', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 600, cursor: saving ? 'not-allowed' : 'pointer', fontFamily: 'inherit' }}>
         {saving ? 'Saving…' : label}
       </button>
     </div>
@@ -135,7 +135,7 @@ function CountrySelect({ value, onChange, placeholder = 'Search country…' }: {
       {open && filtered.length > 0 && (
         <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 200, backgroundColor: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', boxShadow: '0 4px 16px rgba(0,0,0,0.1)', maxHeight: '200px', overflowY: 'auto', marginTop: '4px' }}>
           {filtered.map(c => (
-            <div key={c} onMouseDown={() => select(c)} style={{ padding: '9px 12px', cursor: 'pointer', fontSize: '13px', color: c === value ? '#d4a017' : '#0a1628', backgroundColor: c === value ? '#fef9e7' : undefined }} onMouseOver={e => { if (c !== value) e.currentTarget.style.backgroundColor = '#f8fafc' }} onMouseOut={e => { if (c !== value) e.currentTarget.style.backgroundColor = '' }}>
+            <div key={c} onMouseDown={() => select(c)} style={{ padding: '9px 12px', cursor: 'pointer', fontSize: '13px', color: c === value ? '#1B2A6B' : '#0a1628', backgroundColor: c === value ? '#eef0fa' : undefined }} onMouseOver={e => { if (c !== value) e.currentTarget.style.backgroundColor = '#f8fafc' }} onMouseOut={e => { if (c !== value) e.currentTarget.style.backgroundColor = '' }}>
               {c}
             </div>
           ))}
@@ -197,7 +197,7 @@ function TagInput({ values, onChange }: { values: string[]; onChange: (v: string
     <div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: values.length ? '8px' : 0 }}>
         {values.map((t, i) => (
-          <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', backgroundColor: '#fef9e7', border: '1px solid #d4a017', borderRadius: '6px', padding: '3px 10px', fontSize: '12px', color: '#0a1628', fontWeight: 500 }}>
+          <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', backgroundColor: '#eef0fa', border: '1px solid #1B2A6B', borderRadius: '6px', padding: '3px 10px', fontSize: '12px', color: '#0a1628', fontWeight: 500 }}>
             {t}
             <button type="button" onClick={() => onChange(values.filter((_, j) => j !== i))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', padding: 0, display: 'flex', alignItems: 'center' }}><X size={11} /></button>
           </span>
@@ -565,12 +565,12 @@ function ProfessionalSection({ profile, editing, onEdit, onCancel, onSave, savin
         <div>
           <FieldRow label="Years of Experience" value={`${profile.years_work_experience ?? 0} year${(profile.years_work_experience ?? 0) !== 1 ? 's' : ''}`} />
           <FieldRow label="Sector" value={profile.professional_sector} />
-          <FieldRow label="Portfolio" value={profile.portfolio_url ? <a href={profile.portfolio_url} target="_blank" rel="noopener noreferrer" style={{ color: '#d4a017', textDecoration: 'none' }}>{profile.portfolio_url}</a> : null} />
+          <FieldRow label="Portfolio" value={profile.portfolio_url ? <a href={profile.portfolio_url} target="_blank" rel="noopener noreferrer" style={{ color: '#1B2A6B', textDecoration: 'none' }}>{profile.portfolio_url}</a> : null} />
           <div style={{ padding: '10px 0' }}>
             <div style={{ fontSize: '11px', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '6px' }}>Skills</div>
             {profile.skills && profile.skills.length > 0 ? (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                {profile.skills.map((s, i) => <span key={i} style={{ backgroundColor: '#fef9e7', border: '1px solid #d4a017', borderRadius: '6px', padding: '3px 10px', fontSize: '12px', fontWeight: 500 }}>{s}</span>)}
+                {profile.skills.map((s, i) => <span key={i} style={{ backgroundColor: '#eef0fa', border: '1px solid #1B2A6B', borderRadius: '6px', padding: '3px 10px', fontSize: '12px', fontWeight: 500 }}>{s}</span>)}
               </div>
             ) : <span style={{ color: '#94a3b8', fontSize: '14px' }}>Not set</span>}
           </div>
@@ -689,7 +689,7 @@ function PreferencesSection({ profile, editing, onEdit, onCancel, onSave, saving
   }
 
   const toggleStyle = (on: boolean): React.CSSProperties => ({
-    width: '44px', height: '24px', borderRadius: '12px', border: 'none', cursor: 'pointer', position: 'relative', flexShrink: 0, transition: 'background-color 0.2s', backgroundColor: on ? '#d4a017' : '#e2e8f0',
+    width: '44px', height: '24px', borderRadius: '12px', border: 'none', cursor: 'pointer', position: 'relative', flexShrink: 0, transition: 'background-color 0.2s', backgroundColor: on ? '#1B2A6B' : '#e2e8f0',
   })
 
   return (
@@ -706,8 +706,8 @@ function PreferencesSection({ profile, editing, onEdit, onCancel, onSave, saving
               {OPPORTUNITY_TYPES.map(type => {
                 const selected = oppTypes.includes(type)
                 return (
-                  <button key={type} type="button" onClick={() => toggleType(type)} style={{ padding: '8px 12px', borderRadius: '8px', border: `2px solid ${selected ? '#d4a017' : '#e2e8f0'}`, backgroundColor: selected ? '#fef9e7' : '#ffffff', color: '#0a1628', fontSize: '12px', fontWeight: selected ? 600 : 400, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: '6px', textAlign: 'left' }}>
-                    <span style={{ width: '14px', height: '14px', borderRadius: '4px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: selected ? '#d4a017' : '#e2e8f0' }}>
+                  <button key={type} type="button" onClick={() => toggleType(type)} style={{ padding: '8px 12px', borderRadius: '8px', border: `2px solid ${selected ? '#1B2A6B' : '#e2e8f0'}`, backgroundColor: selected ? '#eef0fa' : '#ffffff', color: '#0a1628', fontSize: '12px', fontWeight: selected ? 600 : 400, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: '6px', textAlign: 'left' }}>
+                    <span style={{ width: '14px', height: '14px', borderRadius: '4px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: selected ? '#1B2A6B' : '#e2e8f0' }}>
                       {selected && <Check size={9} color="#fff" />}
                     </span>
                     {type}
@@ -803,7 +803,7 @@ function NotificationsSection({ profile, onUpdate }: NotifSectionProps) {
   const toggleStyle = (on: boolean, busy: boolean): React.CSSProperties => ({
     width: '44px', height: '24px', borderRadius: '12px', border: 'none',
     cursor: busy ? 'wait' : 'pointer', position: 'relative', flexShrink: 0,
-    transition: 'background-color 0.2s', backgroundColor: on ? '#d4a017' : '#e2e8f0',
+    transition: 'background-color 0.2s', backgroundColor: on ? '#1B2A6B' : '#e2e8f0',
     opacity: busy ? 0.7 : 1,
   })
 
@@ -969,21 +969,42 @@ export default function ProfilePage() {
         </div>
 
         {/* Completion bar */}
-        <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '20px 24px', marginBottom: '24px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-            <div>
-              {displayName && <div style={{ fontWeight: 700, fontSize: '16px', color: '#0a1628' }}>{displayName}</div>}
-              <span style={{ fontSize: '14px', fontWeight: 600, color: '#0a1628' }}>Profile completion</span>
+        {(() => {
+          const missingSections = [
+            { check: !(profile.nationalities && profile.nationalities.length > 0), label: 'your nationality', boost: 120 },
+            { check: !profile.education_level, label: 'your education level', boost: 85 },
+            { check: !profile.field_of_study, label: 'your field of study', boost: 60 },
+            { check: !(profile.opportunity_types_interest && profile.opportunity_types_interest.length > 0), label: 'your opportunity preferences', boost: 70 },
+            { check: !(profile.languages && profile.languages.length > 0), label: 'your languages', boost: 45 },
+            { check: !(profile.target_countries && profile.target_countries.length > 0), label: 'your target countries', boost: 55 },
+            { check: !profile.professional_sector, label: 'your sector', boost: 30 },
+            { check: !(profile.skills && profile.skills.length > 0), label: 'your skills', boost: 25 },
+            { check: !profile.has_passport, label: 'your passport status', boost: 20 },
+          ]
+          const nextMissing = missingSections.find(s => s.check)
+          const barColor = completion >= 80 ? '#15803d' : completion >= 50 ? '#1B2A6B' : '#f59e0b'
+          return (
+            <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '20px 24px', marginBottom: '24px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                <div>
+                  {displayName && <div style={{ fontWeight: 700, fontSize: '16px', color: '#0a1628', marginBottom: '2px' }}>{displayName}</div>}
+                  <span style={{ fontSize: '14px', fontWeight: 600, color: '#0a1628' }}>Profile completion</span>
+                </div>
+                <span style={{ fontSize: '24px', fontWeight: 800, color: barColor }}>{completion}%</span>
+              </div>
+              <div style={{ width: '100%', height: '10px', backgroundColor: '#e2e8f0', borderRadius: '5px', overflow: 'hidden' }}>
+                <div style={{ width: `${completion}%`, height: '100%', backgroundColor: barColor, borderRadius: '5px', transition: 'width 0.5s ease' }} />
+              </div>
+              <p style={{ fontSize: '13px', color: '#475569', margin: '10px 0 0', lineHeight: 1.5 }}>
+                {completion === 100
+                  ? 'Your profile is complete — you are getting the best possible matches.'
+                  : nextMissing
+                    ? <>Add <strong>{nextMissing.label}</strong> to unlock up to <strong style={{ color: '#1B2A6B' }}>{nextMissing.boost} more matches</strong>.</>
+                    : 'Fill in the remaining sections to improve your matches.'}
+              </p>
             </div>
-            <span style={{ fontSize: '20px', fontWeight: 800, color: '#d4a017' }}>{completion}%</span>
-          </div>
-          <div style={{ width: '100%', height: '10px', backgroundColor: '#e2e8f0', borderRadius: '5px', overflow: 'hidden' }}>
-            <div style={{ width: `${completion}%`, height: '100%', backgroundColor: completion >= 80 ? '#15803d' : completion >= 50 ? '#d4a017' : '#f59e0b', borderRadius: '5px', transition: 'width 0.5s ease' }} />
-          </div>
-          <p style={{ fontSize: '12px', color: '#64748b', margin: '8px 0 0' }}>
-            {completion === 100 ? '🎉 Your profile is complete!' : completion >= 50 ? 'Almost there — fill in the remaining sections.' : 'Add more information to get better opportunity matches.'}
-          </p>
-        </div>
+          )
+        })()}
 
         {saveError && (
           <div style={{ backgroundColor: '#fff1f2', border: '1px solid #fecdd3', color: '#be123c', fontSize: '13px', padding: '10px 14px', borderRadius: '8px', marginBottom: '16px' }}>
@@ -1020,7 +1041,7 @@ export default function ProfilePage() {
               {/* Stats */}
               <div style={{ display: 'flex', gap: '16px', marginBottom: '20px' }}>
                 <div style={{ flex: 1, padding: '14px 16px', backgroundColor: '#f8fafc', borderRadius: '10px', border: '1px solid #e2e8f0', textAlign: 'center' }}>
-                  <div style={{ fontSize: '28px', fontWeight: 800, color: '#d4a017' }}>{referredCount}</div>
+                  <div style={{ fontSize: '28px', fontWeight: 800, color: '#1B2A6B' }}>{referredCount}</div>
                   <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>Friends signed up</div>
                 </div>
                 <div style={{ flex: 1, padding: '14px 16px', backgroundColor: '#f0fdf4', borderRadius: '10px', border: '1px solid #bbf7d0', textAlign: 'center' }}>
@@ -1041,7 +1062,7 @@ export default function ProfilePage() {
                     flexShrink: 0, padding: '10px 16px', borderRadius: '8px', fontSize: '13px', fontWeight: 600,
                     border: '1px solid #e2e8f0', cursor: 'pointer', fontFamily: 'inherit',
                     backgroundColor: referralCopied ? '#f0fdf4' : '#fff',
-                    color: referralCopied ? '#15803d' : '#d4a017',
+                    color: referralCopied ? '#15803d' : '#1B2A6B',
                     transition: 'all 0.15s',
                   }}
                 >

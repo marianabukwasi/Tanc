@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import { Star } from 'lucide-react'
@@ -75,7 +75,7 @@ export default function SignupPage() {
     <div style={{ display: 'flex', minHeight: '100vh' }}>
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '40px 48px', backgroundColor: '#ffffff', overflowY: 'auto' }}>
         <a href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none', marginBottom: '48px' }}>
-          <Star size={14} fill="#d4a017" color="#d4a017" />
+          <Star size={14} fill="#1B2A6B" color="#1B2A6B" />
           <span style={{ fontWeight: 700, color: '#0a1628', fontSize: '18px' }}>TANC</span>
         </a>
 
@@ -91,7 +91,7 @@ export default function SignupPage() {
               </p>
               <a
                 href="/login"
-                style={{ display: 'inline-block', marginTop: '32px', color: '#d4a017', fontWeight: 600, textDecoration: 'none', fontSize: '14px' }}
+                style={{ display: 'inline-block', marginTop: '32px', color: '#1B2A6B', fontWeight: 600, textDecoration: 'none', fontSize: '14px' }}
               >
                 Back to login
               </a>
@@ -183,7 +183,7 @@ export default function SignupPage() {
                   style={{
                     width: '100%',
                     height: '48px',
-                    backgroundColor: loading ? '#e2c76a' : '#d4a017',
+                    backgroundColor: loading ? '#8B9DC3' : '#1B2A6B',
                     color: '#ffffff',
                     border: 'none',
                     borderRadius: '8px',
@@ -200,7 +200,7 @@ export default function SignupPage() {
 
               <p style={{ color: '#475569', fontSize: '14px', marginTop: '24px', textAlign: 'center' }}>
                 Already have an account?{' '}
-                <a href="/login" style={{ color: '#d4a017', fontWeight: 600, textDecoration: 'none' }}>Sign in</a>
+                <a href="/login" style={{ color: '#1B2A6B', fontWeight: 600, textDecoration: 'none' }}>Sign in</a>
               </p>
             </>
           )}

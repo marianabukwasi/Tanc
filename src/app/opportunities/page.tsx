@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useCallback, useRef, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -116,7 +116,7 @@ const TYPE_BADGE: Record<string, { bg: string; color: string }> = {
   'Competitions':        { bg: '#fff1f2', color: '#be123c' },
   'Research Programs':   { bg: '#f0f9ff', color: '#0369a1' },
   'Exchange Programs':   { bg: '#fefce8', color: '#a16207' },
-  'Leadership Programs': { bg: '#fef9e7', color: '#d4a017' },
+  'Leadership Programs': { bg: '#eef0fa', color: '#1B2A6B' },
   'Volunteer Programs':  { bg: '#ecfdf5', color: '#059669' },
   'Training Programs':   { bg: '#fffbeb', color: '#b45309' },
   'Hackathons':          { bg: '#f1f5f9', color: '#334155' },
@@ -251,8 +251,8 @@ function Checkbox({ label, checked, onChange }: { label: string; checked: boolea
         onClick={onChange}
         style={{
           width: '15px', height: '15px', borderRadius: '3px',
-          border: `2px solid ${checked ? '#d4a017' : '#cbd5e1'}`,
-          backgroundColor: checked ? '#d4a017' : '#fff',
+          border: `2px solid ${checked ? '#1B2A6B' : '#cbd5e1'}`,
+          backgroundColor: checked ? '#1B2A6B' : '#fff',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           flexShrink: 0, transition: 'all 0.15s', cursor: 'pointer',
         }}
@@ -277,8 +277,8 @@ function Radio({ label, checked, onChange }: { label: string; checked: boolean; 
         onClick={onChange}
         style={{
           width: '15px', height: '15px', borderRadius: '50%',
-          border: `2px solid ${checked ? '#d4a017' : '#cbd5e1'}`,
-          backgroundColor: checked ? '#d4a017' : '#fff',
+          border: `2px solid ${checked ? '#1B2A6B' : '#cbd5e1'}`,
+          backgroundColor: checked ? '#1B2A6B' : '#fff',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           flexShrink: 0, transition: 'all 0.15s', cursor: 'pointer',
         }}
@@ -300,7 +300,7 @@ function Toggle({ label, checked, onChange }: { label: string; checked: boolean;
         onClick={onChange}
         style={{
           width: '36px', height: '20px', borderRadius: '10px',
-          backgroundColor: checked ? '#d4a017' : '#e2e8f0',
+          backgroundColor: checked ? '#1B2A6B' : '#e2e8f0',
           border: 'none', cursor: 'pointer', position: 'relative',
           transition: 'background-color 0.2s', flexShrink: 0,
         }}
@@ -354,7 +354,7 @@ function Sidebar({ filters, onChange, onReset }: {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
         <span style={{ fontWeight: 700, fontSize: '15px', color: '#0a1628' }}>Filters</span>
         {hasFilters ? (
-          <button onClick={onReset} style={{ background: 'none', border: 'none', color: '#d4a017', fontSize: '12px', fontWeight: 600, cursor: 'pointer', padding: 0 }}>
+          <button onClick={onReset} style={{ background: 'none', border: 'none', color: '#1B2A6B', fontSize: '12px', fontWeight: 600, cursor: 'pointer', padding: 0 }}>
             Clear all
           </button>
         ) : null}
@@ -388,7 +388,7 @@ function Sidebar({ filters, onChange, onReset }: {
             {filters.countries.map(c => (
               <span key={c} style={{
                 display: 'inline-flex', alignItems: 'center', gap: '4px',
-                backgroundColor: '#fef9e7', border: '1px solid #d4a017', color: '#92600a',
+                backgroundColor: '#eef0fa', border: '1px solid #1B2A6B', color: '#92600a',
                 borderRadius: '50px', fontSize: '11px', padding: '2px 8px', fontWeight: 500,
               }}>
                 {c}
@@ -452,7 +452,7 @@ function Sidebar({ filters, onChange, onReset }: {
               }
             }}
             style={{
-              height: '32px', padding: '0 10px', backgroundColor: '#0a1628', color: '#d4a017',
+              height: '32px', padding: '0 10px', backgroundColor: '#0a1628', color: '#1B2A6B',
               border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer',
             }}
           >Add</button>
@@ -555,10 +555,10 @@ function MatchBadge({ authUser, profile, opp }: {
     return (
       <div style={{
         width: '44px', height: '44px', borderRadius: '50%', border: '2px solid #fcd34d',
-        backgroundColor: '#fef9e7', display: 'flex', alignItems: 'center',
+        backgroundColor: '#eef0fa', display: 'flex', alignItems: 'center',
         justifyContent: 'center', flexShrink: 0,
       }}>
-        <span style={{ fontSize: '10px', color: '#d4a017', fontWeight: 700 }}>?%</span>
+        <span style={{ fontSize: '10px', color: '#1B2A6B', fontWeight: 700 }}>?%</span>
       </div>
     )
   }
@@ -581,8 +581,8 @@ function MatchBadge({ authUser, profile, opp }: {
   })
 
   const { score, tier } = result
-  const color  = tier === 'apply_now' ? '#15803d' : tier === 'almost_there' ? '#d4a017' : '#64748b'
-  const bg     = tier === 'apply_now' ? '#f0fdf4' : tier === 'almost_there' ? '#fef9e7' : '#f8fafc'
+  const color  = tier === 'apply_now' ? '#15803d' : tier === 'almost_there' ? '#1B2A6B' : '#64748b'
+  const bg     = tier === 'apply_now' ? '#f0fdf4' : tier === 'almost_there' ? '#eef0fa' : '#f8fafc'
   const border = tier === 'apply_now' ? '#86efac' : tier === 'almost_there' ? '#fcd34d' : '#e2e8f0'
 
   return (
@@ -619,7 +619,7 @@ function OppCard({ opp, authUser, profile, saved, onSave, isCompared, onToggleCo
       onMouseLeave={() => setHovered(false)}
       style={{
         backgroundColor: '#ffffff',
-        border: `1px solid ${isCompared ? '#d4a017' : hovered ? '#d4a017' : '#e2e8f0'}`,
+        border: `1px solid ${isCompared ? '#1B2A6B' : hovered ? '#1B2A6B' : '#e2e8f0'}`,
         borderRadius: '12px', padding: '18px',
         display: 'flex', flexDirection: 'column', gap: '10px',
         cursor: 'pointer',
@@ -640,10 +640,10 @@ function OppCard({ opp, authUser, profile, saved, onSave, isCompared, onToggleCo
               title={isCompared ? 'Remove from comparison' : 'Add to comparison'}
               style={{
                 background: isCompared ? '#fef9ee' : 'none',
-                border: `1px solid ${isCompared ? '#d4a017' : 'transparent'}`,
+                border: `1px solid ${isCompared ? '#1B2A6B' : 'transparent'}`,
                 borderRadius: '4px',
                 cursor: 'pointer',
-                color: isCompared ? '#d4a017' : '#cbd5e1',
+                color: isCompared ? '#1B2A6B' : '#cbd5e1',
                 padding: '2px 5px',
                 display: 'flex', alignItems: 'center', gap: '2px',
                 fontSize: '10px', fontWeight: 600, flexShrink: 0,
@@ -657,10 +657,10 @@ function OppCard({ opp, authUser, profile, saved, onSave, isCompared, onToggleCo
             aria-label="Save"
             style={{
               background: 'none', border: 'none', cursor: 'pointer',
-              color: saved ? '#d4a017' : '#cbd5e1', padding: '2px', display: 'flex', flexShrink: 0,
+              color: saved ? '#1B2A6B' : '#cbd5e1', padding: '2px', display: 'flex', flexShrink: 0,
             }}
           >
-            <Bookmark size={16} fill={saved ? '#d4a017' : 'none'} />
+            <Bookmark size={16} fill={saved ? '#1B2A6B' : 'none'} />
           </button>
         </div>
       </div>
@@ -703,8 +703,8 @@ function OppCard({ opp, authUser, profile, saved, onSave, isCompared, onToggleCo
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
         {opp.funding_type && (
           <span style={{
-            display: 'inline-block', backgroundColor: '#fef9e7', color: '#d4a017',
-            border: '1px solid #d4a017', fontSize: '10px', fontWeight: 600,
+            display: 'inline-block', backgroundColor: '#eef0fa', color: '#1B2A6B',
+            border: '1px solid #1B2A6B', fontSize: '10px', fontWeight: 600,
             padding: '3px 9px', borderRadius: '50px',
           }}>{opp.funding_type}</span>
         )}
@@ -967,7 +967,7 @@ function OpportunitiesContent() {
             ? 'Searching…'
             : `Showing ${displayed.length.toLocaleString()} of ${allResults.length.toLocaleString()} opportunit${allResults.length === 1 ? 'y' : 'ies'}`}
           {activeFilterCount > 0 && (
-            <button onClick={resetFilters} style={{ marginLeft: '10px', background: 'none', border: 'none', color: '#d4a017', fontSize: '12px', fontWeight: 600, cursor: 'pointer', padding: 0 }}>
+            <button onClick={resetFilters} style={{ marginLeft: '10px', background: 'none', border: 'none', color: '#1B2A6B', fontSize: '12px', fontWeight: 600, cursor: 'pointer', padding: 0 }}>
               Clear {activeFilterCount} filter{activeFilterCount > 1 ? 's' : ''}
             </button>
           )}
@@ -984,7 +984,7 @@ function OpportunitiesContent() {
             <div style={{ fontSize: '16px', fontWeight: 600, color: '#475569', marginBottom: '8px' }}>No opportunities found</div>
             <div style={{ fontSize: '14px' }}>Try adjusting your filters or search terms.</div>
             <button onClick={resetFilters} style={{
-              marginTop: '20px', backgroundColor: '#0a1628', color: '#d4a017',
+              marginTop: '20px', backgroundColor: '#0a1628', color: '#1B2A6B',
               border: 'none', borderRadius: '8px', padding: '10px 20px',
               fontWeight: 600, fontSize: '14px', cursor: 'pointer',
             }}>Clear all filters</button>
@@ -1011,7 +1011,7 @@ function OpportunitiesContent() {
                 <button
                   onClick={() => setDisplayCount(c => c + PAGE_SIZE)}
                   style={{
-                    backgroundColor: '#0a1628', color: '#d4a017',
+                    backgroundColor: '#0a1628', color: '#1B2A6B',
                     border: 'none', borderRadius: '8px', padding: '12px 32px',
                     fontWeight: 700, fontSize: '15px', cursor: 'pointer',
                   }}
@@ -1028,11 +1028,11 @@ function OpportunitiesContent() {
       {compareIds.length > 0 && (
         <div style={{
           position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50,
-          backgroundColor: '#0a1628', borderTop: '2px solid #d4a017',
+          backgroundColor: '#0a1628', borderTop: '2px solid #1B2A6B',
           padding: '12px 24px',
           display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap',
         }}>
-          <span style={{ fontSize: '13px', fontWeight: 700, color: '#d4a017', flexShrink: 0 }}>
+          <span style={{ fontSize: '13px', fontWeight: 700, color: '#1B2A6B', flexShrink: 0 }}>
             Compare ({compareIds.length}/3):
           </span>
           <div style={{ display: 'flex', gap: '8px', flex: 1, flexWrap: 'wrap' }}>
@@ -1076,7 +1076,7 @@ function OpportunitiesContent() {
               href={`/compare?ids=${compareIds.join(',')}`}
               style={{
                 display: 'inline-block',
-                backgroundColor: '#d4a017', color: '#0a1628',
+                backgroundColor: '#1B2A6B', color: '#0a1628',
                 borderRadius: '6px', padding: '7px 18px',
                 fontSize: '13px', fontWeight: 700, textDecoration: 'none',
               }}

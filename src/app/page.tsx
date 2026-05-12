@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
@@ -71,7 +71,7 @@ const CATEGORY_COLORS: Record<string, { bg: string; color: string; iconBg: strin
   'Competitions':        { bg: '#fff1f2', color: '#be123c', iconBg: '#ffe4e6' },
   'Research Programs':   { bg: '#f0f9ff', color: '#0369a1', iconBg: '#e0f2fe' },
   'Exchange Programs':   { bg: '#fefce8', color: '#a16207', iconBg: '#fef9c3' },
-  'Leadership Programs': { bg: '#fef9e7', color: '#d4a017', iconBg: '#fde68a' },
+  'Leadership Programs': { bg: '#eef0fa', color: '#1B2A6B', iconBg: '#fde68a' },
   'Mentorship Programs': { bg: '#fff0f3', color: '#e11d48', iconBg: '#ffe4eb' },
   'Volunteer Programs':  { bg: '#ecfdf5', color: '#059669', iconBg: '#d1fae5' },
   'Training Programs':   { bg: '#fffbeb', color: '#b45309', iconBg: '#fef3c7' },
@@ -92,7 +92,7 @@ const TYPE_BADGE: Record<string, { bg: string; color: string }> = {
   'Competitions':        { bg: '#fff1f2', color: '#be123c' },
   'Research Programs':   { bg: '#f0f9ff', color: '#0369a1' },
   'Exchange Programs':   { bg: '#fefce8', color: '#a16207' },
-  'Leadership Programs': { bg: '#fef9e7', color: '#d4a017' },
+  'Leadership Programs': { bg: '#eef0fa', color: '#1B2A6B' },
   'Mentorship Programs': { bg: '#fff0f3', color: '#e11d48' },
   'Volunteer Programs':  { bg: '#ecfdf5', color: '#059669' },
   'Training Programs':   { bg: '#fffbeb', color: '#b45309' },
@@ -249,7 +249,7 @@ function FeaturedCard({ opp }: { opp: FeaturedOpp }) {
       onClick={() => router.push(`/opportunity/${opp.id}`)}
       style={{
         backgroundColor: '#ffffff',
-        border: `1px solid ${hovered ? '#d4a017' : '#e2e8f0'}`,
+        border: `1px solid ${hovered ? '#1B2A6B' : '#e2e8f0'}`,
         borderRadius: '14px',
         padding: '22px',
         display: 'flex',
@@ -298,7 +298,7 @@ function FeaturedCard({ opp }: { opp: FeaturedOpp }) {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-            <Star size={11} color="#d4a017" fill="#d4a017" />
+            <Star size={11} color="#1B2A6B" fill="#1B2A6B" />
           </div>
         </div>
       </div>
@@ -325,9 +325,9 @@ function FeaturedCard({ opp }: { opp: FeaturedOpp }) {
       {opp.funding_type && (
         <span style={{
           display: 'inline-block',
-          backgroundColor: '#fef9e7',
-          color: '#d4a017',
-          border: '1px solid #d4a017',
+          backgroundColor: '#eef0fa',
+          color: '#1B2A6B',
+          border: '1px solid #1B2A6B',
           fontSize: '11px',
           fontWeight: 600,
           padding: '3px 10px',
@@ -460,16 +460,16 @@ export default function HomePage() {
           display: 'inline-flex',
           alignItems: 'center',
           gap: '6px',
-          backgroundColor: '#fef9e7',
-          border: '1px solid #d4a017',
-          color: '#d4a017',
+          backgroundColor: '#eef0fa',
+          border: '1px solid #1B2A6B',
+          color: '#1B2A6B',
           borderRadius: '50px',
           fontSize: '13px',
           fontWeight: 600,
           padding: '6px 18px',
           marginBottom: '32px',
         }}>
-          <Star size={12} fill="#d4a017" color="#d4a017" />
+          <Star size={12} fill="#1B2A6B" color="#1B2A6B" />
           Now with AI-powered matching
         </div>
 
@@ -484,7 +484,7 @@ export default function HomePage() {
           letterSpacing: '-1px',
         }}>
           Every Opportunity.<br />
-          <span style={{ color: '#d4a017' }}>Built Around You.</span>
+          <span style={{ color: '#1B2A6B' }}>Built Around You.</span>
         </h1>
 
         {/* Subheadline */}
@@ -508,7 +508,7 @@ export default function HomePage() {
               alignItems: 'center',
               gap: '8px',
               backgroundColor: '#0a1628',
-              color: '#d4a017',
+              color: '#1B2A6B',
               padding: '14px 28px',
               borderRadius: '10px',
               fontWeight: 700,
@@ -634,7 +634,7 @@ export default function HomePage() {
           ].map((item, i, arr) => (
             <div key={item.label} style={{ display: 'flex', alignItems: 'center' }}>
               <div style={{ textAlign: 'center', padding: '0 52px' }}>
-                <div style={{ fontSize: 'clamp(40px, 6vw, 64px)', fontWeight: 900, color: '#d4a017', lineHeight: 1, marginBottom: '10px' }}>
+                <div style={{ fontSize: 'clamp(40px, 6vw, 64px)', fontWeight: 900, color: '#1B2A6B', lineHeight: 1, marginBottom: '10px' }}>
                   <CountUp target={item.value} />
                 </div>
                 <div style={{ fontSize: '16px', color: '#94a3b8', fontWeight: 500 }}>
@@ -663,7 +663,7 @@ export default function HomePage() {
             </div>
             <a
               href="/opportunities"
-              style={{ color: '#d4a017', fontWeight: 700, fontSize: '14px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}
+              style={{ color: '#1B2A6B', fontWeight: 700, fontSize: '14px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}
             >
               View all <ArrowRight size={14} />
             </a>
@@ -769,9 +769,9 @@ export default function HomePage() {
                   justifyContent: 'center',
                   flexShrink: 0,
                 }}>
-                  <Icon size={26} color="#d4a017" />
+                  <Icon size={26} color="#1B2A6B" />
                 </div>
-                <div style={{ fontSize: '12px', fontWeight: 700, color: '#d4a017', letterSpacing: '2px' }}>
+                <div style={{ fontSize: '12px', fontWeight: 700, color: '#1B2A6B', letterSpacing: '2px' }}>
                   STEP {step}
                 </div>
                 <div style={{ fontWeight: 700, fontSize: '17px', color: '#0a1628', lineHeight: 1.3 }}>
@@ -802,7 +802,7 @@ export default function HomePage() {
               <Reveal key={s.id} delay={i * 80}>
                 <div style={{ backgroundColor: '#fefce8', border: '1px solid #fde68a', borderRadius: '14px', padding: '22px', textAlign: 'left', height: '100%', boxSizing: 'border-box' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
-                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#d4a017', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#1B2A6B', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                       <span style={{ color: '#ffffff', fontWeight: 800, fontSize: '15px' }}>
                         {(s.user_name ?? '?').charAt(0).toUpperCase()}
                       </span>
@@ -842,7 +842,7 @@ export default function HomePage() {
             gap: '6px',
             backgroundColor: 'rgba(212,160,23,0.15)',
             border: '1px solid rgba(212,160,23,0.4)',
-            color: '#d4a017',
+            color: '#1B2A6B',
             borderRadius: '50px',
             fontSize: '13px',
             fontWeight: 600,
@@ -865,7 +865,7 @@ export default function HomePage() {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '8px',
-              backgroundColor: '#d4a017',
+              backgroundColor: '#1B2A6B',
               color: '#ffffff',
               padding: '16px 36px',
               borderRadius: '10px',

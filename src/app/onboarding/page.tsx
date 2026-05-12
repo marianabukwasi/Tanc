@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -55,8 +55,8 @@ function CountryDropdown({ value, onChange }: { value: string; onChange: (v: str
               onMouseDown={() => select(c)}
               style={{
                 padding: '10px 14px', cursor: 'pointer', fontSize: '14px',
-                color: c === value ? '#d4a017' : '#0a1628',
-                backgroundColor: c === value ? '#fef9e7' : undefined,
+                color: c === value ? '#1B2A6B' : '#0a1628',
+                backgroundColor: c === value ? '#eef0fa' : undefined,
                 fontWeight: c === value ? 600 : 400,
               }}
               onMouseOver={e => { if (c !== value) e.currentTarget.style.backgroundColor = '#f8fafc' }}
@@ -127,7 +127,7 @@ export default function OnboardingPage() {
     <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '88px', paddingBottom: '48px', paddingLeft: '24px', paddingRight: '24px' }}>
       {/* Logo */}
       <a href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none', marginBottom: '40px' }}>
-        <Star size={16} fill="#d4a017" color="#d4a017" />
+        <Star size={16} fill="#1B2A6B" color="#1B2A6B" />
         <span style={{ fontWeight: 800, color: '#0a1628', fontSize: '20px' }}>TANC</span>
       </a>
 
@@ -137,13 +137,13 @@ export default function OnboardingPage() {
           <div key={n} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <div style={{
               width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              backgroundColor: n < step ? '#d4a017' : n === step ? '#0a1628' : '#e2e8f0',
+              backgroundColor: n < step ? '#1B2A6B' : n === step ? '#0a1628' : '#e2e8f0',
               color: n <= step ? '#ffffff' : '#94a3b8',
               fontWeight: 700, fontSize: '13px',
             }}>
               {n < step ? <Check size={14} /> : n}
             </div>
-            {n < 3 && <div style={{ width: '40px', height: '2px', backgroundColor: n < step ? '#d4a017' : '#e2e8f0' }} />}
+            {n < 3 && <div style={{ width: '40px', height: '2px', backgroundColor: n < step ? '#1B2A6B' : '#e2e8f0' }} />}
           </div>
         ))}
       </div>
@@ -162,14 +162,14 @@ export default function OnboardingPage() {
             </p>
             <CountryDropdown value={country} onChange={setCountry} />
             {country && (
-              <div style={{ marginTop: '12px', padding: '10px 14px', backgroundColor: '#fef9e7', border: '1px solid #d4a017', borderRadius: '8px', fontSize: '14px', color: '#0a1628', fontWeight: 600 }}>
+              <div style={{ marginTop: '12px', padding: '10px 14px', backgroundColor: '#eef0fa', border: '1px solid #1B2A6B', borderRadius: '8px', fontSize: '14px', color: '#0a1628', fontWeight: 600 }}>
                 {country}
               </div>
             )}
             <button
               onClick={() => setStep(2)}
               disabled={!canNext1}
-              style={{ marginTop: '32px', width: '100%', height: '48px', backgroundColor: canNext1 ? '#d4a017' : '#e2e8f0', color: canNext1 ? '#ffffff' : '#94a3b8', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: 600, cursor: canNext1 ? 'pointer' : 'not-allowed', fontFamily: 'inherit' }}
+              style={{ marginTop: '32px', width: '100%', height: '48px', backgroundColor: canNext1 ? '#1B2A6B' : '#e2e8f0', color: canNext1 ? '#ffffff' : '#94a3b8', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: 600, cursor: canNext1 ? 'pointer' : 'not-allowed', fontFamily: 'inherit' }}
             >
               Continue
             </button>
@@ -193,14 +193,14 @@ export default function OnboardingPage() {
                   onClick={() => setEducationLevel(level)}
                   style={{
                     width: '100%', padding: '14px 18px', borderRadius: '10px', textAlign: 'left',
-                    border: `2px solid ${educationLevel === level ? '#d4a017' : '#e2e8f0'}`,
-                    backgroundColor: educationLevel === level ? '#fef9e7' : '#ffffff',
+                    border: `2px solid ${educationLevel === level ? '#1B2A6B' : '#e2e8f0'}`,
+                    backgroundColor: educationLevel === level ? '#eef0fa' : '#ffffff',
                     color: '#0a1628', fontSize: '15px', fontWeight: educationLevel === level ? 600 : 400,
                     cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                   }}
                 >
                   {level}
-                  {educationLevel === level && <Check size={16} color="#d4a017" />}
+                  {educationLevel === level && <Check size={16} color="#1B2A6B" />}
                 </button>
               ))}
             </div>
@@ -211,7 +211,7 @@ export default function OnboardingPage() {
               <button
                 onClick={() => setStep(3)}
                 disabled={!canNext2}
-                style={{ flex: 1, height: '48px', backgroundColor: canNext2 ? '#d4a017' : '#e2e8f0', color: canNext2 ? '#ffffff' : '#94a3b8', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: 600, cursor: canNext2 ? 'pointer' : 'not-allowed', fontFamily: 'inherit' }}
+                style={{ flex: 1, height: '48px', backgroundColor: canNext2 ? '#1B2A6B' : '#e2e8f0', color: canNext2 ? '#ffffff' : '#94a3b8', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: 600, cursor: canNext2 ? 'pointer' : 'not-allowed', fontFamily: 'inherit' }}
               >
                 Continue
               </button>
@@ -238,15 +238,15 @@ export default function OnboardingPage() {
                     onClick={() => toggleType(type)}
                     style={{
                       padding: '10px 14px', borderRadius: '8px', textAlign: 'left',
-                      border: `2px solid ${selected ? '#d4a017' : '#e2e8f0'}`,
-                      backgroundColor: selected ? '#fef9e7' : '#ffffff',
+                      border: `2px solid ${selected ? '#1B2A6B' : '#e2e8f0'}`,
+                      backgroundColor: selected ? '#eef0fa' : '#ffffff',
                       color: '#0a1628', fontSize: '13px', fontWeight: selected ? 600 : 400,
                       cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: '6px',
                     }}
                   >
                     <span style={{
                       width: '16px', height: '16px', borderRadius: '4px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      backgroundColor: selected ? '#d4a017' : '#e2e8f0',
+                      backgroundColor: selected ? '#1B2A6B' : '#e2e8f0',
                     }}>
                       {selected && <Check size={10} color="#ffffff" />}
                     </span>
@@ -267,7 +267,7 @@ export default function OnboardingPage() {
               <button
                 onClick={handleSubmit}
                 disabled={!canSubmit || submitting}
-                style={{ flex: 1, height: '48px', backgroundColor: canSubmit ? '#d4a017' : '#e2e8f0', color: canSubmit ? '#ffffff' : '#94a3b8', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: 600, cursor: canSubmit ? 'pointer' : 'not-allowed', fontFamily: 'inherit' }}
+                style={{ flex: 1, height: '48px', backgroundColor: canSubmit ? '#1B2A6B' : '#e2e8f0', color: canSubmit ? '#ffffff' : '#94a3b8', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: 600, cursor: canSubmit ? 'pointer' : 'not-allowed', fontFamily: 'inherit' }}
               >
                 {submitting ? 'Setting up your profile…' : 'Get Started'}
               </button>

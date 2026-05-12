@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
@@ -107,14 +107,14 @@ function CalendarView({ entries }: { entries: TrackerEntry[] }) {
               onClick={() => { if (day && hasDL) setSelectedDay(selected ? null : day) }}
               style={{
                 minHeight: '50px', padding: '6px', borderRadius: '8px', position: 'relative',
-                border: selected ? '2px solid #d4a017' : '1px solid #f1f5f9',
+                border: selected ? '2px solid #1B2A6B' : '1px solid #f1f5f9',
                 backgroundColor: day === null ? 'transparent' : isToday(day) ? '#fef9ee' : '#fff',
                 cursor: hasDL ? 'pointer' : 'default',
               }}
             >
               {day !== null && (
                 <>
-                  <span style={{ fontSize: '13px', fontWeight: isToday(day) ? 700 : 400, color: isToday(day) ? '#d4a017' : '#334155' }}>
+                  <span style={{ fontSize: '13px', fontWeight: isToday(day) ? 700 : 400, color: isToday(day) ? '#1B2A6B' : '#334155' }}>
                     {day}
                   </span>
                   {hasDL && (
@@ -275,8 +275,8 @@ export default function TrackerPage() {
               style={{
                 background: 'none', border: 'none', cursor: 'pointer', padding: '10px 14px',
                 fontSize: '13px', fontWeight: 600, whiteSpace: 'nowrap', fontFamily: 'inherit',
-                color: activeTab === tab ? '#d4a017' : '#64748b',
-                borderBottom: `2px solid ${activeTab === tab ? '#d4a017' : 'transparent'}`,
+                color: activeTab === tab ? '#1B2A6B' : '#64748b',
+                borderBottom: `2px solid ${activeTab === tab ? '#1B2A6B' : 'transparent'}`,
                 marginBottom: '-2px', transition: 'color 0.15s',
               }}
             >
@@ -286,7 +286,7 @@ export default function TrackerPage() {
                   marginLeft: '5px', fontSize: '10px', fontWeight: 700,
                   padding: '1px 5px', borderRadius: '10px',
                   backgroundColor: activeTab === tab ? '#fef9ee' : '#f1f5f9',
-                  color: activeTab === tab ? '#d4a017' : '#94a3b8',
+                  color: activeTab === tab ? '#1B2A6B' : '#94a3b8',
                 }}>
                   {count}
                 </span>

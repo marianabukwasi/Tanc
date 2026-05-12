@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
+﻿import { createClient } from '@supabase/supabase-js'
 
 function sb() {
   return createClient(
@@ -66,7 +66,7 @@ export default async function UsersPage() {
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <div style={{
                           width: '28px', height: '28px', borderRadius: '50%',
-                          backgroundColor: '#d4a017', color: '#ffffff',
+                          backgroundColor: '#1B2A6B', color: '#ffffff',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           fontSize: '11px', fontWeight: 700, flexShrink: 0,
                         }}>

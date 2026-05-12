@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -31,12 +31,12 @@ export function AdminNav() {
               alignItems:      'center',
               gap:             '10px',
               padding:         '10px 20px',
-              color:           active ? '#d4a017' : '#94a3b8',
+              color:           active ? '#1B2A6B' : '#94a3b8',
               textDecoration:  'none',
               fontSize:        '14px',
               fontWeight:      active ? 700 : 500,
               backgroundColor: active ? 'rgba(212,160,23,0.08)' : 'transparent',
-              borderLeft:      `3px solid ${active ? '#d4a017' : 'transparent'}`,
+              borderLeft:      `3px solid ${active ? '#1B2A6B' : 'transparent'}`,
             }}
           >
             <Icon size={16} />

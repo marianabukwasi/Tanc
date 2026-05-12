@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
@@ -307,7 +307,7 @@ function Section({ title, open, onToggle, children }: {
 function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }} onClick={() => onChange(!checked)}>
-      <div style={{ width: '40px', height: '22px', borderRadius: '11px', backgroundColor: checked ? '#d4a017' : '#e2e8f0', position: 'relative', flexShrink: 0, transition: 'background-color 0.2s' }}>
+      <div style={{ width: '40px', height: '22px', borderRadius: '11px', backgroundColor: checked ? '#1B2A6B' : '#e2e8f0', position: 'relative', flexShrink: 0, transition: 'background-color 0.2s' }}>
         <span style={{ position: 'absolute', top: '3px', left: checked ? '21px' : '3px', width: '16px', height: '16px', borderRadius: '50%', backgroundColor: '#ffffff', transition: 'left 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.15)' }} />
       </div>
       <span style={{ fontSize: '13px', color: '#0a1628' }}>{label}</span>
@@ -474,7 +474,7 @@ function AddForm() {
             <button
               onClick={handleExtract}
               disabled={extracting || !url.trim()}
-              style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '0 18px', height: '38px', border: 'none', borderRadius: '7px', backgroundColor: extracting ? '#b8891a' : '#d4a017', color: '#ffffff', fontSize: '13px', fontWeight: 700, cursor: extracting ? 'not-allowed' : 'pointer', flexShrink: 0 }}
+              style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '0 18px', height: '38px', border: 'none', borderRadius: '7px', backgroundColor: extracting ? '#b8891a' : '#1B2A6B', color: '#ffffff', fontSize: '13px', fontWeight: 700, cursor: extracting ? 'not-allowed' : 'pointer', flexShrink: 0 }}
             >
               {extracting ? <><Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} /> Extracting…</> : 'Extract'}
             </button>
@@ -744,7 +744,7 @@ function AddForm() {
         <button
           onClick={() => handleSave(true)}
           disabled={saving !== null || !form.title.trim()}
-          style={{ padding: '11px 22px', border: 'none', borderRadius: '8px', backgroundColor: '#d4a017', color: '#ffffff', fontSize: '14px', fontWeight: 700, cursor: saving !== null ? 'not-allowed' : 'pointer', opacity: saving !== null ? 0.7 : 1 }}
+          style={{ padding: '11px 22px', border: 'none', borderRadius: '8px', backgroundColor: '#1B2A6B', color: '#ffffff', fontSize: '14px', fontWeight: 700, cursor: saving !== null ? 'not-allowed' : 'pointer', opacity: saving !== null ? 0.7 : 1 }}
         >
           {saving === 'publish' ? 'Publishing…' : editId ? 'Save & Publish' : 'Publish'}
         </button>

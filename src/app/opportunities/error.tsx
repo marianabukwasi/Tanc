@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 export default function Error({ reset }: { error: Error; reset: () => void }) {
   return (
@@ -13,7 +13,7 @@ export default function Error({ reset }: { error: Error; reset: () => void }) {
         </p>
         <button
           onClick={reset}
-          style={{ padding: '10px 24px', backgroundColor: '#d4a017', color: '#ffffff', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 700, cursor: 'pointer' }}
+          style={{ padding: '10px 24px', backgroundColor: '#1B2A6B', color: '#ffffff', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 700, cursor: 'pointer' }}
         >
           Try again
         </button>

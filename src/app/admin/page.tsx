@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
+﻿import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 
 function sb() {
@@ -38,7 +38,7 @@ export default async function AdminDashboard() {
     { label: 'New this week',      value: newOppsWeek ?? 0, color: '#15803d', href: '/admin/manage', sub: 'published in last 7 days' },
     { label: 'Total users',        value: totalUsers ?? 0,  color: '#7c3aed', href: '/admin/users',  sub: 'registered profiles' },
     { label: 'New users',          value: newUsersWeek ?? 0,color: '#0369a1', href: '/admin/users',  sub: 'joined this week' },
-    { label: 'Subscribers',        value: subscribers ?? 0, color: '#d4a017', href: null,            sub: 'email list' },
+    { label: 'Subscribers',        value: subscribers ?? 0, color: '#1B2A6B', href: null,            sub: 'email list' },
     { label: 'Pending review',     value: pending ?? 0,     color: '#dc2626', href: '/admin/queue',  sub: 'awaiting publish' },
     { label: 'Archived',           value: archived ?? 0,    color: '#94a3b8', href: '/admin/manage', sub: 'not active' },
     { label: 'Reports',            value: reports ?? 0,     color: '#f97316', href: '/admin/queue',  sub: 'needs attention' },
@@ -77,7 +77,7 @@ export default async function AdminDashboard() {
       <div style={{ marginTop: '36px', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
         <Link href="/admin/add" style={{
           display: 'inline-flex', alignItems: 'center', gap: '8px',
-          padding: '11px 22px', backgroundColor: '#d4a017', color: '#ffffff',
+          padding: '11px 22px', backgroundColor: '#1B2A6B', color: '#ffffff',
           borderRadius: '8px', textDecoration: 'none', fontSize: '14px', fontWeight: 700,
         }}>
           + Add Opportunity

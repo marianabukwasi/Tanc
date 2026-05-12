@@ -1,4 +1,4 @@
-import { Resend } from 'resend'
+﻿import { Resend } from 'resend'
 import { createClient } from '@supabase/supabase-js'
 import { logError } from '@/lib/errors'
 
@@ -62,7 +62,7 @@ export async function POST(request: Request) {
               While you wait, browse opportunities that are open right now:
             </p>
             <a href="https://tancglobal.com/browse"
-               style="display:inline-block;background:#d4a017;color:#ffffff;text-decoration:none;
+               style="display:inline-block;background:#1B2A6B;color:#ffffff;text-decoration:none;
                       padding:12px 28px;border-radius:8px;font-weight:700;font-size:15px">
               Browse Opportunities →
             </a>

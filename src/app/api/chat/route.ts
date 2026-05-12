@@ -191,7 +191,7 @@ export async function POST(request: Request) {
     : 'No opportunities found matching the query.'
 
   // 4. Build system prompt
-  const systemPrompt = `You are the TANC opportunity assistant. TANC is a global platform for scholarships, fellowships, internships, exchange programmes, and competitions — for adults 18+.
+  const systemPrompt = `You are Marie, the TANC opportunity guide. TANC is a global platform for scholarships, fellowships, internships, exchange programmes, and competitions — for adults 18+.
 
 User profile:
 ${profileBlock}
