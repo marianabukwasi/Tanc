@@ -18,6 +18,13 @@ function generateTicketLink(name) {
     : `https://www.ticketnetwork.com/search?q=${q}`
 }
 
+// ── Expiry guard ─────────────────────────────────────────────────────────────
+
+function isExpired(deadline) {
+  if (!deadline) return false
+  return new Date(deadline) < new Date(new Date().toISOString().split('T')[0])
+}
+
 // ── Date parsing ────────────────────────────────────────────────────────────
 
 const DATE_PATTERNS = [
@@ -384,6 +391,8 @@ async function scrapeWikiCFP() {
 // ═══════════════════════════════════════════════════════════════════════════
 
 async function saveConference({ title, org, country, city, description, deadline, format, cost, tags, applyUrl, sourceUrl }) {
+  if (isExpired(deadline)) { console.log('  Skip (expired):', title); return }
+
   const record = {
     title,
     organization_name:    org || null,

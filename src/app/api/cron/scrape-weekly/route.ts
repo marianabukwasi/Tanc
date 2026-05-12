@@ -18,8 +18,14 @@ const SCRAPERS = [
   { name: 'afterschoolafrica', file: 'scraper-afterschoolafrica.js' },
   { name: 'volunteerworld',    file: 'scraper-volunteerworld.js'    },
   { name: 'unvolunteers',      file: 'scraper-unvolunteers.js'      },
-  { name: 'residencies',       file: 'scraper-residencies.js'       },
-  { name: 'conferences',       file: 'scraper-conferences.js'       },
+  { name: 'residencies',              file: 'scraper-residencies.js'              },
+  { name: 'conferences',              file: 'scraper-conferences.js'              },
+  { name: 'opportunitiesforafricans', file: 'scraper-opportunitiesforafricans.js' },
+  { name: 'youthop',                  file: 'scraper-youthop.js'                  },
+  { name: 'unjobs',                   file: 'scraper-unjobs.js'                   },
+  { name: 'idealist',                 file: 'scraper-idealist.js'                 },
+  { name: 'opportunitiescorners',     file: 'scraper-opportunitiescorners.js'     },
+  { name: 'opportunityportal',        file: 'scraper-opportunityportal.js'        },
 ]
 
 export async function GET(request: Request) {

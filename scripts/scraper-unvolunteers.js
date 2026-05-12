@@ -11,6 +11,13 @@ import { delay, saveOpportunity, calculateCompleteness } from './lib/scraper-uti
 const BASE_URL = 'https://www.onlinevolunteering.org'
 const LISTING_URL = `${BASE_URL}/en/opportunities`
 
+// ── Expiry guard ─────────────────────────────────────────────────────────────
+
+function isExpired(deadline) {
+  if (!deadline) return false
+  return new Date(deadline) < new Date(new Date().toISOString().split('T')[0])
+}
+
 // ── Date parsing ────────────────────────────────────────────────────────────
 
 const DATE_PATTERNS = [
@@ -141,6 +148,8 @@ async function scrapeListings() {
         try {
           const opp = await scrapeOpportunity(oppUrl)
           if (!opp || !opp.title) continue
+
+          if (isExpired(opp.deadline)) { console.log('  Skip (expired):', opp.title); continue }
 
           const record = {
             title:                opp.title,

@@ -8,6 +8,13 @@ import fetch from 'node-fetch'
 import { load } from 'cheerio'
 import { delay, saveOpportunity, calculateCompleteness } from './lib/scraper-utils.js'
 
+// ── Expiry guard ─────────────────────────────────────────────────────────────
+
+function isExpired(deadline) {
+  if (!deadline) return false
+  return new Date(deadline) < new Date(new Date().toISOString().split('T')[0])
+}
+
 // ── Date parsing ────────────────────────────────────────────────────────────
 
 const DATE_PATTERNS = [
@@ -374,6 +381,8 @@ async function scrapePoetsWriters() {
 // ═══════════════════════════════════════════════════════════════════════════
 
 async function saveResidency(post, sourceUrl, source) {
+  if (isExpired(post.deadline)) { console.log('  Skip (expired):', post.title); return }
+
   const tags = [...(post.disciplines || [])]
   if (post.duration) tags.push(post.duration)
 
